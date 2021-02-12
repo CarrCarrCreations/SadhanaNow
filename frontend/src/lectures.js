@@ -28,7 +28,7 @@ const classes = [
       '"Ayurveda helps us fall in love with ourselves and with existence, with life itself." Dr Vasant Lad',
     category: "Basic Courses",
     price: 60,
-    rating: 4.5,
+    rating: 3.5,
     numReviews: 12,
   },
   {
@@ -45,7 +45,7 @@ const classes = [
       "“Let a man lift himself by his own Self alone, let him not lower himself; for the Self alone is the friend of oneself and this Self alone is the enemy of oneself.” Swami Sivananda",
     category: "Basic Courses",
     price: 60,
-    rating: 4.5,
+    rating: 2.5,
     numReviews: 12,
   },
   {
@@ -63,7 +63,7 @@ const classes = [
     quote:
       '"Sow a thought, you reap an action. Sow an action, you reap a habit. Sow a habit, you reap a character. Sow a character, you reap a destiny." Swami Sivananda',
     price: 60,
-    rating: 4.5,
+    rating: 1.5,
     numReviews: 12,
   },
   {
@@ -79,7 +79,7 @@ const classes = [
       "“El Yoga te muestra el camino, te une a Dios, te hace inmortal. El Yoga es una vida completa. Un método que revisa todas las facetas de la personalidad humana. El Yoga es el arte de vivir rectamente” Swami Sivananda",
     category: "Basic Courses",
     price: 60,
-    rating: 4.5,
+    rating: 0,
     numReviews: 12,
   },
   {
@@ -97,7 +97,7 @@ const classes = [
       "‘Bhakti is love for love’s sake … Love is natural to everybody.’ Swami Sivananda",
     category: "Basic Courses",
     price: 60,
-    rating: 4.5,
+    rating: 0.5,
     numReviews: 12,
   },
 ];
