@@ -15,7 +15,7 @@ const LectureScreen = ({ match }) => {
       setLecture(data);
     };
     fetchLectures();
-  }, [match.params.id]);
+  }, [match]);
 
   return (
     <>
