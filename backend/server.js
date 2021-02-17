@@ -1,6 +1,9 @@
-const express = require("express");
-const cors = require("cors");
-const lectures = require("./data/lectures");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import lectures from "./data/lectures.js";
+
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -19,4 +22,8 @@ app.get("/api/lectures/:id", (req, res) => {
   res.json(lecture);
 });
 
-app.listen(5000, console.log(`Server running on port 5000`));
+const PORT = process.env.PORT || 5000;
+app.listen(
+  PORT,
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+);

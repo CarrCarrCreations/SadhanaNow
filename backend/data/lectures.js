@@ -102,4 +102,4 @@ const classes = [
   },
 ];
 
-module.exports = classes;
+export default classes;
