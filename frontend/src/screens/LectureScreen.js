@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
 import Rating from "../components/Rating";
-import lectures from "../lectures";
 
 const LectureScreen = ({ match }) => {
-  const lecture = lectures.find((lecture) => lecture._id === match.params.id);
+  const [lecture, setLecture] = useState({});
+
+  useEffect(() => {
+    const fetchLectures = async () => {
+      const { data } = await axios.get(
+        `http://localhost:5000/api/lectures/${match.params.id}`
+      );
+      setLecture(data);
+    };
+    fetchLectures();
+  }, [match.params.id]);
 
   return (
     <>
