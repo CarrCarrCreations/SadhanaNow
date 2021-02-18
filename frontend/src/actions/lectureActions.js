@@ -9,7 +9,7 @@ export const listLectures = () => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
 
-    const { data } = await axios.get("/api/lectures");
+    const { data } = await axios.get("http://localhost:5000/api/lectures");
 
     dispatch({
       type: PRODUCT_LIST_SUCCESS,
