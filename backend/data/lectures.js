@@ -1,6 +1,5 @@
 const classes = [
   {
-    _id: "1",
     title: "La Conquista del Miedo",
     language: "Sp",
     teacher: "Pablo Narayana",
@@ -16,7 +15,6 @@ const classes = [
     numReviews: 12,
   },
   {
-    _id: "2",
     title: "Elemental Truths of Ayurveda",
     language: "En",
     teacher: "Isvari (Mary Ann) Johnson AP, CYI",
@@ -32,7 +30,6 @@ const classes = [
     numReviews: 12,
   },
   {
-    _id: "3",
     title: "Intro Bhagavad Gita English",
     language: "En",
     teacher: "Pablo Narayana",
@@ -49,7 +46,6 @@ const classes = [
     numReviews: 12,
   },
   {
-    _id: "4",
     title: "Positive Thinking",
     language: "En",
     teacher: "Jagadambika",
@@ -67,7 +63,6 @@ const classes = [
     numReviews: 12,
   },
   {
-    _id: "5",
     title: "INTRODUCCIÓN A LA FILOSOFÍA DEL YOGA Y VEDANTA",
     language: "Sp",
     teacher: "Pablo Narayana",
@@ -83,7 +78,6 @@ const classes = [
     numReviews: 12,
   },
   {
-    _id: "6",
     title: "Mantra and Bhakti Yoga",
     language: "En",
     teacher: "Jagadambika",

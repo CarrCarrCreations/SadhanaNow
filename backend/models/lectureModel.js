@@ -27,7 +27,7 @@ const lectureSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    classTitle: {
+    title: {
       type: String,
       required: true,
     },
@@ -35,11 +35,11 @@ const lectureSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    sanskrit: {
+    sanskritTranslit: {
       type: String,
       required: true,
     },
-    courseDesc: {
+    description: {
       type: String,
       required: true,
     },
