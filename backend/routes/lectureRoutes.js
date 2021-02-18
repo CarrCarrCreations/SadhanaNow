@@ -25,7 +25,8 @@ router.get(
     if (lecture) {
       res.json(lecture);
     } else {
-      res.status(404).json({ message: "Lecture not found" });
+      res.status(404);
+      throw new Error("Lecture not found");
     }
   })
 );
