@@ -10,12 +10,12 @@ import { listLectureDetails } from "../actions/lectureActions";
 const LectureScreen = ({ match }) => {
   const dispatch = useDispatch();
 
-  const lectureDetails = useSelector((state) => state.lectureDetails);
-  const { loading, error, lecture } = lectureDetails;
-
   useEffect(() => {
     dispatch(listLectureDetails(match.params.id));
   }, [dispatch, match]);
+
+  const lectureDetails = useSelector((state) => state.lectureDetails);
+  const { loading, error, lecture } = lectureDetails;
 
   return (
     <>
