@@ -7,12 +7,16 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { listLectureDetails } from "../actions/lectureActions";
 
-const LectureScreen = ({ match }) => {
+const LectureScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(listLectureDetails(match.params.id));
   }, [dispatch, match]);
+
+  const addToCartHandler = () => {
+    history.push(`/cart/${match.params.id}`);
+  };
 
   const lectureDetails = useSelector((state) => state.lectureDetails);
   const { loading, error, lecture } = lectureDetails;
@@ -61,7 +65,11 @@ const LectureScreen = ({ match }) => {
                 <ListGroup.Item>
                   <Row>
                     <Col>
-                      <Button className="btn-block" type="button">
+                      <Button
+                        onClick={addToCartHandler}
+                        className="btn-block"
+                        type="button"
+                      >
                         Add To Cart
                       </Button>
                     </Col>
