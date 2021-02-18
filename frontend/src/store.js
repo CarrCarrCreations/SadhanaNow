@@ -1,9 +1,15 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
-import { lectureListReducer } from "./reducers/lectureReducers.js";
+import {
+  lectureListReducer,
+  lectureDetailsReducer,
+} from "./reducers/lectureReducers.js";
 
-const reducer = combineReducers({ lectureList: lectureListReducer });
+const reducer = combineReducers({
+  lectureList: lectureListReducer,
+  lectureDetails: lectureDetailsReducer,
+});
 const initialState = {};
 const middleware = [thunk];
 
