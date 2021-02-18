@@ -53,7 +53,12 @@ const lectureSchema = mongoose.Schema(
       default: 0,
     },
     reviews: [reviewSchema],
-    ratings: {
+    rating: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    numReviews: {
       type: Number,
       required: true,
       default: 0,
