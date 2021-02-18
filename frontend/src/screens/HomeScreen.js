@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
 import Lecture from "../components/Lecture";
-import { listLectures } from "../actions/lectureActions.js";
+import Message from "../components/Message";
+import Loader from "../components/Loader";
+import { listLectures } from "../actions/lectureActions";
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -14,15 +16,13 @@ const HomeScreen = () => {
   const lectureList = useSelector((state) => state.lectureList);
   const { loading, error, lectures } = lectureList;
 
-  // return <></>;
-
   return (
     <>
       <h1>Latest Classes</h1>
       {loading ? (
-        <h2>LOADING...</h2>
+        <Loader></Loader>
       ) : error ? (
-        <h3>{error}</h3>
+        <Message variant="danger">{error}</Message>
       ) : (
         <Row>
           {lectures.map((lecture) => (
