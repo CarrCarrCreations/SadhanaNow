@@ -8,6 +8,7 @@ import LectureScreen from "./screens/LectureScreen";
 import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Container>
           <Route path="/login/" component={LoginScreen} />
           <Route path="/register/" component={RegisterScreen} />
+          <Route path="/profile/" component={ProfileScreen} />
           <Route path="/lecture/:id" component={LectureScreen} />
           <Route path="/cart/:id?" component={CartScreen} />
           <Route path="/" exact component={HomeScreen} />
