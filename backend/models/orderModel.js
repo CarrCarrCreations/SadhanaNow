@@ -19,7 +19,7 @@ const orderSchema = mongoose.Schema(
         },
       },
     ],
-    paymentMethods: {
+    paymentMethod: {
       type: String,
       required: true,
     },
