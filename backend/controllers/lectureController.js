@@ -38,4 +38,47 @@ const deleteLecture = asyncHandler(async (req, res) => {
   }
 });
 
-export { getLectures, getLecturesById, deleteLecture };
+// @desc    Create a lecture
+// @route   POST /api/lectures
+// @access  Private/Admin
+const createLecture = asyncHandler(async (req, res) => {
+  const lecture = new Lecture({
+    title: "Sample Name",
+    price: 0,
+    user: req.user._id,
+    image: "/images/sample.jpg",
+    description: "Sample description",
+  });
+
+  const createdLecture = await lecture.save();
+  res.status(201).json(createdLecture);
+});
+
+// @desc    Update a lecture
+// @route   PUT /api/lectures/:id
+// @access  Private/Admin
+const updateLecture = asyncHandler(async (req, res) => {
+  const { title, price, description, image } = req.body;
+  const lecture = await Lecture.findById(req.params.id);
+
+  if (lecture) {
+    lecture.title = title;
+    lecture.price = price;
+    lecture.description = description;
+    lecture.image = image;
+
+    const updatedLecture = await lecture.save();
+    res.status(201).json(updatedLecture);
+  } else {
+    res.status(400);
+    throw new Error("Lecture not found.");
+  }
+});
+
+export {
+  getLectures,
+  getLecturesById,
+  deleteLecture,
+  createLecture,
+  updateLecture,
+};
