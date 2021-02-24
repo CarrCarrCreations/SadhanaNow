@@ -4,7 +4,7 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { listLectures } from "../actions/lectureActions";
+import { listLectures, deleteLecture } from "../actions/lectureActions";
 
 const LectureListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
@@ -12,16 +12,23 @@ const LectureListScreen = ({ history, match }) => {
   const lectureList = useSelector((state) => state.lectureList);
   const { loading, error, lectures } = lectureList;
 
+  const lectureDelete = useSelector((state) => state.lectureDelete);
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = lectureDelete;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const createLectureHandler = (lecture) => {
-    // Create Product
+    // CREATE LECTURE ACTION
   };
 
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure?")) {
-      // DELETE ACTION
+      dispatch(deleteLecture(id));
     }
   };
 
@@ -31,7 +38,7 @@ const LectureListScreen = ({ history, match }) => {
     } else {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, lectureDelete]);
 
   return (
     <>
@@ -45,7 +52,8 @@ const LectureListScreen = ({ history, match }) => {
           </Button>
         </Col>
       </Row>
-
+      {loadingDelete && <Loader />}
+      {errorDelete && <Message variant="danger">{errorDelete}</Message>}
       {loading ? (
         <Loader />
       ) : error ? (

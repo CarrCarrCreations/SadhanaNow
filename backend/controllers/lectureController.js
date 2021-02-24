@@ -23,4 +23,19 @@ const getLecturesById = asyncHandler(async (req, res) => {
   }
 });
 
-export { getLectures, getLecturesById };
+// @desc    Delete a lecture
+// @route   DELETE /api/lectures/:id
+// @access  Private/Admin
+const deleteLecture = asyncHandler(async (req, res) => {
+  const lecture = await Lecture.findById(req.params.id);
+
+  if (lecture) {
+    await lecture.remove();
+    res.json({ message: "Lecture removed." });
+  } else {
+    res.status(404);
+    throw new Error("Lecture not found");
+  }
+});
+
+export { getLectures, getLecturesById, deleteLecture };
