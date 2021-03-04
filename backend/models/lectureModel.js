@@ -37,7 +37,6 @@ const lectureSchema = mongoose.Schema(
     },
     sanskritTranslit: {
       type: String,
-      required: true,
     },
     description: {
       type: String,
@@ -45,7 +44,6 @@ const lectureSchema = mongoose.Schema(
     },
     quote: {
       type: String,
-      required: true,
     },
     price: {
       type: Number,

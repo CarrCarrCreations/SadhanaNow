@@ -4,6 +4,7 @@ import thunk from "redux-thunk";
 import {
   lectureListReducer,
   lectureDetailsReducer,
+  lectureDeleteReducer,
 } from "./reducers/lectureReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -11,6 +12,9 @@ import {
   userRegisterReducer,
   userDetailsReducer,
   userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
 } from "./reducers/userReducers";
 import {
   orderCreateReducers,
@@ -22,11 +26,15 @@ import {
 const reducer = combineReducers({
   lectureList: lectureListReducer,
   lectureDetails: lectureDetailsReducer,
+  lectureDelete: lectureDeleteReducer,
   cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userList: userListReducer,
+  userDelete: userDeleteReducer,
+  userUpdate: userUpdateReducer,
   orderCreate: orderCreateReducers,
   orderDetails: orderDetailsReducers,
   orderPay: orderPayReducers,

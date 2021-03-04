@@ -8,7 +8,7 @@ import { getUserDetails, updateUserProfile } from "../actions/userActions";
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
 import { listMyOrders } from "../actions/orderActions";
 
-const ProfileScreen = ({ history, location }) => {
+const ProfileScreen = ({ history }) => {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +33,7 @@ const ProfileScreen = ({ history, location }) => {
     if (!userInfo) {
       history.push("/login");
     } else {
-      if (!user || !user.displayName || success) {
+      if (!user || !user.displayName || success || userInfo._id !== user._id) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserDetails("profile"));
         dispatch(listMyOrders());
