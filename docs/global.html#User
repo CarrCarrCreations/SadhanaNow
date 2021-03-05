@@ -30,8 +30,6 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>User<span class="signature">(userInfo)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>Class to create a User object</p></div>
-        
     
 </header>
 
@@ -40,8 +38,6 @@
     
         
 
-    
-    <h2>Constructor</h2>
     
 
     
@@ -91,7 +87,7 @@
             <td class="type">
             
                 
-<span class="param-type">UserInfo</span>
+<span class="param-type">Object</span>
 
 
             
@@ -101,7 +97,148 @@
 
             
 
-            <td class="description last"><p>Information about the user</p></td>
+            <td class="description last"><p>Information about the user</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>displayName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>isAdmin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -142,7 +279,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line13">line 13</a>
+        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -288,7 +425,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line22">line 22</a>
+        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -398,7 +535,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line27">line 27</a>
+        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -508,7 +645,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line32">line 32</a>
+        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line29">line 29</a>
     </li></ul></dd>
     
 
@@ -618,7 +755,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line37">line 37</a>
+        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -728,7 +865,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line42">line 42</a>
+        <a href="models_User.js.html">models/User.js</a>, <a href="models_User.js.html#line39">line 39</a>
     </li></ul></dd>
     
 
@@ -762,13 +899,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#User">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#authUser">authUser</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#updateUserProfile">updateUserProfile</a></li><li><a href="global.html#UserService">UserService</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-UserController.html">UserController</a></li><li><a href="module-UserService.html">UserService</a></li></ul><h3>Classes</h3><ul><li><a href="global.html#User">User</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Mar 05 2021 10:11:20 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Mar 05 2021 11:21:44 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

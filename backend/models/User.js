@@ -1,18 +1,15 @@
 /**
- * @typedef {Object} UserInfo
- * @property {string} _id
- * @property {string} displayName
- * @property {string} email
- * @property {boolean} isAdmin
- * @property {string} token
- */
-
-/**
- * Class to create a User object
+ * @function User
+ * @description Class to create a User object
  */
 class User {
   /**
-   * @param {UserInfo} userInfo Information about the user
+   * @param {Object} userInfo Information about the user
+   * @param {string} userInfo._id
+   * @param {string} userInfo.displayName
+   * @param {string} userInfo.email
+   * @param {boolean} userInfo.isAdmin
+   * @param {string} userInfo.token
    */
   constructor(userInfo) {
     /**
@@ -42,3 +39,5 @@ class User {
     this.token = userInfo.token;
   }
 }
+
+export default User;
