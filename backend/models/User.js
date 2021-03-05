@@ -1,5 +1,5 @@
 /**
- * @function User
+ * @constructor
  * @description Class to create a User object
  */
 class User {
