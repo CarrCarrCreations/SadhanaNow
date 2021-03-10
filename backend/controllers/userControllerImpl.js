@@ -42,7 +42,7 @@ const registerUser = (UserService) =>
     try {
       res
         .status(201)
-        .json(await UserService.registerUser(displayName, email, password));
+        .json(await UserService.registerUser({ displayName, email, password }));
     } catch (error) {
       next(error);
     }

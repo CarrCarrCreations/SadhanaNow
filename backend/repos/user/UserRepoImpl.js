@@ -2,15 +2,23 @@ const create = (Collection) => async (newEntry) => {
   try {
     return await Collection.create(newEntry);
   } catch (error) {
-    throw new Error("UserRepo: Internal Server Error");
+    throw new Error("UserRepo: Error while creating new database entry");
   }
 };
 
-const find = (UserModel) => async () => {
+const findMany = (Collection) => async (query = {}) => {
   try {
-    return UserModel.find({});
+    return await Collection.find(query);
   } catch (error) {
-    throw new Error("UserRepo: Internal Server Error");
+    throw new Error("UserRepo: Error while reading from database");
+  }
+};
+
+const findOne = (Collection) => async (query = {}) => {
+  try {
+    return await Collection.findOne(query);
+  } catch (error) {
+    throw new Error("UserRepo: Error while reading from database");
   }
 };
 
@@ -59,13 +67,27 @@ const matchPassword = (UserModel) => (password) => {
  */
 const UserRepo = (UserModel) => {
   return {
-    create: create(UserModel),
     /**
-     * @function find
-     * @description Find all Users
+     * @function create
+     * @description Create a new entry in the database
+     * @param {Object} newEntry - object containing new entry's data
      * @returns {User}
      */
-    find: find(UserModel),
+    create: create(UserModel),
+    /**
+     * @function findOne
+     * @description Find one entry by provided query
+     * @param {Object} query - defaults to {}
+     * @returns {User}
+     */
+    findOne: findOne(UserModel),
+    /**
+     * @function findMany
+     * @description find many entries by provided query
+     * @param {Object} query - defaults to {}
+     * @returns {User}
+     */
+    findMany: findMany(UserModel),
     /**
      * @function findById
      * @description Find User by supplied ID

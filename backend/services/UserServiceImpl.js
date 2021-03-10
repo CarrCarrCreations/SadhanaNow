@@ -54,8 +54,8 @@ const updateUserProfile = (UserRepo) => async (user, reqBody) => {
   }
 };
 
-const registerUser = (UserRepo) => async (displayName, email, password) => {
-  const userExists = await UserRepo.findUserByEmail(email);
+const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
+  const userExists = await UserRepo.findOne({ email });
   if (userExists) {
     throw Error("User already exists.", 400);
   }
@@ -80,7 +80,7 @@ const registerUser = (UserRepo) => async (displayName, email, password) => {
 };
 
 const getUserById = (UserRepo) => async (userId) => {
-  const user = await UserRepo.findById(userId).select("-password");
+  const user = await UserRepo.findById(userId);
 
   if (user) {
     return user;
@@ -90,7 +90,7 @@ const getUserById = (UserRepo) => async (userId) => {
 };
 
 const getAllUsers = (UserRepo) => async () => {
-  return await UserRepo.find();
+  return await UserRepo.findMany();
 };
 
 const deleteUser = (UserRepo) => async (userId) => {
