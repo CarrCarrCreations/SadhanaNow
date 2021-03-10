@@ -58,34 +58,21 @@ const getUsers = (UserService) =>
     }
   });
 
-// @desc    Delete a user
-// @route   DELETE /api/users/:id
-// @access  Private/Admin
 const deleteUser = (UserService) =>
-  asyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
-
-    if (user) {
-      await user.remove();
-      res.json({ message: "User removed" });
-    } else {
-      res.status(404);
-      throw new Error("User not found");
+  asyncHandler(async (req, res, next) => {
+    try {
+      res.json(await UserService.deleteUser(req.param.id));
+    } catch (error) {
+      next(error);
     }
   });
 
-// @desc    Get a user by ID
-// @route   GET /api/users/:id
-// @access  Private/Admin
 const getUserById = (UserService) =>
-  asyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id).select("-password");
-
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404);
-      throw new Error("User not found");
+  asyncHandler(async (req, res, next) => {
+    try {
+      res.json(await UserService.getUserById(req.params.id));
+    } catch (error) {
+      next(error);
     }
   });
 
@@ -114,6 +101,7 @@ const updateUser = (UserService) =>
       throw new Error("User not found");
     }
   });
+
 /**
  *
  *  Object containing all helper methods for User objects
@@ -130,7 +118,13 @@ const userController = (UserService) => {
      * @returns {User} The currently logged in user
      */
     authUser: authUser(UserService),
-
+    /**
+     * @function getUserById
+     * @description Get a user by ID
+     * <br>Access: Private/Admin
+     * @route GET /api/users/:id
+     * @returns {User} User Object
+     */
     getUserById: getUserById(UserService),
     /**
      * @function getUserProfile
@@ -167,6 +161,13 @@ const userController = (UserService) => {
      * @returns {User[]} List of all Users in the DB
      */
     getUsers: getUsers(UserService),
+    /**
+     * @function deleteUser
+     * @description Delete a user
+     * <br>Access: Private/Admin
+     * @route   DELETE /api/users/:id
+     * @returns {Object} Object with `message` parameter
+     */
     deleteUser: deleteUser(UserService),
   };
 };

@@ -1,6 +1,7 @@
 import generateToken from "../utils/generateToken.js";
 import User from "../models/User.js";
 import { Error } from "../middleware/errorMiddleware.js";
+import UserRepo from "../repos/user/UserRepo.js";
 
 const authUserEmailAndPassword = (UserRepo) => async (email, password) => {
   const user = await UserRepo.findUserByEmail(email);
@@ -78,9 +79,31 @@ const registerUser = (UserRepo) => async (displayName, email, password) => {
   }
 };
 
+const getUserById = (UserRepo) => async (userId) => {
+  const user = await UserRepo.findById(userId).select("-password");
+
+  if (user) {
+    return user;
+  } else {
+    throw new Error("User not found", 404);
+  }
+};
+
 const getAllUsers = (UserRepo) => async () => {
   return await UserRepo.find();
 };
+
+const deleteUser = (UserRepo) => async (userId) => {
+  const user = await UserRepo.findById(userId);
+
+  if (user) {
+    await UserRepo.remove();
+    return { message: "User removed" };
+  } else {
+    throw new Error("User not found", 404);
+  }
+};
+
 /**
  *  Object containing all helper methods for User objects
  * @module UserService
@@ -127,6 +150,20 @@ const UserService = (UserRepo) => {
      * @returns {User[]} Array of Users
      */
     getAllUsers: getAllUsers(UserRepo),
+    /**
+     * @function getUserById
+     * @description Returns User by supplied ID
+     * @param {string} userId
+     * @returns {User} User
+     */
+    getUserById: getUserById(UserRepo),
+    /**
+     * @function deleteUser
+     * @description Delete a user
+     * @param {string} userId
+     * @returns {Object} Object with `message` parameter
+     */
+    deleteUser: deleteUser(userId),
   };
 };
 
