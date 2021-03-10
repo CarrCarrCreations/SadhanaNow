@@ -1,7 +1,6 @@
 import generateToken from "../utils/generateToken.js";
 import User from "../models/User.js";
 import { Error } from "../middleware/errorMiddleware.js";
-import UserRepo from "../repos/user/UserRepo.js";
 
 const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
   const user = await UserRepo.findOne({ email });
@@ -79,13 +78,13 @@ const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
   }
 };
 
-const getUserById = (UserRepo) => async ({ userId }) => {
-  const user = await UserRepo.findOne({ userId });
+const getUserById = (UserRepo) => async ({ _id }) => {
+  const user = await UserRepo.findOne({ _id });
 
   if (user) {
     return user;
   } else {
-    throw new Error("User not found", 404);
+    throw Error("User not found", 404);
   }
 };
 
@@ -93,40 +92,27 @@ const getAllUsers = (UserRepo) => async () => {
   return await UserRepo.findMany();
 };
 
-const deleteUser = (UserRepo) => async ({ userId }) => {
-  const user = await UserRepo.findOne({ userId });
+const deleteUser = (UserRepo) => async ({ _id }) => {
+  const user = await UserRepo.findOne({ _id });
 
   if (user) {
-    await UserRepo.remove();
+    await UserRepo.remove({ _id });
     return { message: "User removed" };
   } else {
-    throw new Error("User not found", 404);
+    throw Error("User not found", 404);
   }
 };
 
 const updateUser = (UserRepo) => async ({
-  userId,
+  _id,
   displayName,
   email,
   isAdmin,
 }) => {
-  const user = await UserRepo.findById(userId);
-
-  if (user) {
-    user.displayName = displayName || user.displayName;
-    user.email = email || user.email;
-    user.isAdmin = isAdmin ?? user.isAdmin;
-
-    const updatedUser = await UserRepo.save(user);
-
-    return new User({
-      _id: updatedUser._id,
-      displayName: updatedUser.displayName,
-      email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
-    });
-  } else {
-    throw new Error("User not found", 404);
+  try {
+    return await UserRepo.update({ _id, displayName, email, isAdmin });
+  } catch (error) {
+    throw Error("UserService: User not found", 404);
   }
 };
 

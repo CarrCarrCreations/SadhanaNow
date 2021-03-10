@@ -80,12 +80,12 @@ const getUserById = (UserService) =>
 
 const updateUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const userId = req.params.id;
+    const _id = req.params.id;
     const { displayName, email, isAdmin } = req.body;
 
     try {
       res.json(
-        await UserService.updateUser({ userId, displayName, email, isAdmin })
+        await UserService.updateUser({ _id, displayName, email, isAdmin })
       );
     } catch (error) {
       next(error);

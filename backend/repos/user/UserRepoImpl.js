@@ -1,8 +1,11 @@
+import User from "../../models/User.js";
+import { Error } from "../../middleware/errorMiddleware.js";
+
 const create = (Collection) => async (newEntry) => {
   try {
     return await Collection.create(newEntry);
   } catch (error) {
-    throw new Error("UserRepo: Error while creating new database entry");
+    throw Error("UserRepo: Error while creating new database entry");
   }
 };
 
@@ -10,7 +13,7 @@ const findMany = (Collection) => async (query = {}) => {
   try {
     return await Collection.find(query);
   } catch (error) {
-    throw new Error("UserRepo: Error while reading from database");
+    throw Error("UserRepo: Error while reading from database");
   }
 };
 
@@ -18,25 +21,39 @@ const findOne = (Collection) => async (query = {}) => {
   try {
     return await Collection.findOne(query);
   } catch (error) {
-    throw new Error("UserRepo: Error while reading from database");
+    throw Error("UserRepo: Error while reading from database");
   }
 };
 
-const remove = () => async (user) => {
+const remove = (Collection) => async ({ _id }) => {
   try {
-    user.remove();
-    return true;
+    return await Collection.remove({ _id });
   } catch (error) {
-    throw new Error("UserRepo: Error removing user from database");
+    throw Error("UserRepo: Error while deleting entry from database");
   }
 };
 
-const save = () => async (user) => {
+const update = (Collection) => async ({ _id, displayName, email, isAdmin }) => {
   try {
-    user.save();
-    return true;
+    const user = await Collection.findOne({ _id });
+
+    if (user) {
+      user.displayName = displayName || user.displayName;
+      user.email = email || user.email;
+      user.isAdmin = isAdmin ?? user.isAdmin;
+
+      const updatedUser = await user.save();
+      const newUser = new User({
+        _id: updatedUser._id,
+        displayName: updatedUser.displayName,
+        email: updatedUser.email,
+        isAdmin: updatedUser.isAdmin,
+      });
+
+      return newUser;
+    }
   } catch (error) {
-    throw new Error("UserRepo: Error saving user to database");
+    throw Error("UserRepo: " + error.message);
   }
 };
 
@@ -85,14 +102,14 @@ const UserRepo = (UserModel) => {
      * @param {User} User object
      * @returns {boolean}
      */
-    remove: remove(),
+    remove: remove(UserModel),
     /**
      * @function save
      * @description Save a user to the database
      * @param {User} User object
      * @returns {boolean}
      */
-    save: save(),
+    update: update(UserModel),
   };
 };
 
