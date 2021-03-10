@@ -20,12 +20,12 @@ const authUserEmailAndPassword = (UserRepo) => async (email, password) => {
 
 const getLoggedInUserProfile = () => (user) => {
   if (user) {
-    return {
+    return new User({
       _id: user._id,
       displayName: user.displayName,
       email: user.email,
       isAdmin: user.isAdmin,
-    };
+    });
   } else {
     throw Error("User not found", 400);
   }
@@ -41,13 +41,13 @@ const updateUserProfile = (UserRepo) => async (user, reqBody) => {
 
     const updatedUser = await UserRepo.save();
 
-    return {
+    return new User({
       _id: updatedUser._id,
       displayName: updatedUser.displayName,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
       token: generateToken(updatedUser._id),
-    };
+    });
   } else {
     throw Error("User not found", 400);
   }
@@ -66,21 +66,25 @@ const registerUser = (UserRepo) => async (displayName, email, password) => {
   });
 
   if (user) {
-    return {
+    return new User({
       _id: user._id,
       displayName: user.displayName,
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
-    };
+    });
   } else {
     throw Error("Invalid user data.", 400);
   }
 };
+
+const getAllUsers = (UserRepo) => async () => {
+  return await UserRepo.find();
+};
 /**
  *  Object containing all helper methods for User objects
  * @module UserService
- * @param {Object} UserRepo - Object containing all DB methods for the Users
+ * @param {Object} UserRepo - Object containing all DB methods to interact with User objects
  */
 const UserService = (UserRepo) => {
   return {
@@ -117,6 +121,12 @@ const UserService = (UserRepo) => {
      * @returns {User} User
      */
     registerUser: registerUser(UserRepo),
+    /**
+     * @function getAllUsers
+     * @description Returns all users in the DB
+     * @returns {User[]} Array of Users
+     */
+    getAllUsers: getAllUsers(UserRepo),
   };
 };
 

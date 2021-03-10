@@ -18,7 +18,7 @@ const getUserProfile = (UserService) =>
     const user = req.user;
 
     try {
-      res.json(UserService.getLoggedInUserProfile(user));
+      res.json(await UserService.getLoggedInUserProfile(user));
     } catch (error) {
       next(error);
     }
@@ -30,7 +30,7 @@ const updateUserProfile = (UserService) =>
     const body = req.body;
 
     try {
-      res.json(UserService.updateUserProfile(user, body));
+      res.json(await UserService.updateUserProfile(user, body));
     } catch (error) {
       next(error);
     }
@@ -43,19 +43,19 @@ const registerUser = (UserService) =>
     try {
       res
         .status(201)
-        .json(UserService.registerUser(displayName, email, password));
+        .json(await UserService.registerUser(displayName, email, password));
     } catch (error) {
       next(error);
     }
   });
 
-// @desc    Get all users
-// @route   GET /api/users/
-// @access  Private/Admin
 const getUsers = (UserService) =>
-  asyncHandler(async (req, res) => {
-    const users = await User.find({});
-    res.json(users);
+  asyncHandler(async (req, res, next) => {
+    try {
+      res.json(await UserService.getAllUsers());
+    } catch (error) {
+      next(error);
+    }
   });
 
 // @desc    Delete a user
@@ -118,6 +118,7 @@ const updateUser = (UserService) =>
  *
  *  Object containing all helper methods for User objects
  * @module UserController
+ * @param {Object} UserService - Object containing all helper functions for the User objects
  */
 const userController = (UserService) => {
   return {
@@ -158,6 +159,13 @@ const userController = (UserService) => {
      * @returns {User} The newly registered user
      */
     registerUser: registerUser(UserService),
+    /**
+     * @function getUsers
+     * @description Get all users
+     * <br>Access: Private/Admin
+     * @route GET /api/users/
+     * @returns {User[]} List of all Users in the DB
+     */
     getUsers: getUsers(UserService),
     deleteUser: deleteUser(UserService),
   };
