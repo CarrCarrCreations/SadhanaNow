@@ -103,14 +103,10 @@ const deleteUser = (UserRepo) => async ({ _id }) => {
   }
 };
 
-const updateUser = (UserRepo) => async ({
-  _id,
-  displayName,
-  email,
-  isAdmin,
-}) => {
+const updateUser = (UserRepo) => async ({ _id, changedEntry }) => {
   try {
-    return await UserRepo.update({ _id, displayName, email, isAdmin });
+    await UserRepo.update({ _id, changedEntry });
+    return await UserRepo.findOne({ _id });
   } catch (error) {
     throw Error("UserService: User not found", 404);
   }

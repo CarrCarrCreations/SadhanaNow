@@ -85,7 +85,10 @@ const updateUser = (UserService) =>
 
     try {
       res.json(
-        await UserService.updateUser({ _id, displayName, email, isAdmin })
+        await UserService.updateUser({
+          _id,
+          changedEntry: { displayName, email, isAdmin },
+        })
       );
     } catch (error) {
       next(error);

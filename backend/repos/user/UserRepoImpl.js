@@ -33,25 +33,9 @@ const remove = (Collection) => async ({ _id }) => {
   }
 };
 
-const update = (Collection) => async ({ _id, displayName, email, isAdmin }) => {
+const update = (Collection) => async ({ _id, changedEntry }) => {
   try {
-    const user = await Collection.findOne({ _id });
-
-    if (user) {
-      user.displayName = displayName || user.displayName;
-      user.email = email || user.email;
-      user.isAdmin = isAdmin ?? user.isAdmin;
-
-      const updatedUser = await user.save();
-      const newUser = new User({
-        _id: updatedUser._id,
-        displayName: updatedUser.displayName,
-        email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
-      });
-
-      return newUser;
-    }
+    return await Collection.update({ _id }, { $set: changedEntry });
   } catch (error) {
     throw Error("UserRepo: " + error.message);
   }
