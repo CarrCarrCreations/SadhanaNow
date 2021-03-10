@@ -163,7 +163,7 @@ const UserService = (UserRepo) => {
      * @param {string} userId
      * @returns {Object} Object with `message` parameter
      */
-    deleteUser: deleteUser(userId),
+    deleteUser: deleteUser(UserRepo),
   };
 };
 

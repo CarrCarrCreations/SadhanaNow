@@ -22,14 +22,14 @@ const findUserByEmail = (UserModel) => async (email) => {
   }
 };
 
-const remove = (UserModel = async (user) => {
+const remove = () => async (user) => {
   try {
     user.remove();
     return true;
   } catch (error) {
     throw new Error("UserRepo: Error removing user from database");
   }
-});
+};
 
 const matchPassword = (UserModel) => (password) => {
   return UserModel.matchPassword(password);
@@ -75,7 +75,7 @@ const UserRepo = (UserModel) => {
      * @param {string} userId - User ID
      * @returns {boolean}
      */
-    remove: remove(userId),
+    remove: remove(),
   };
 };
 
