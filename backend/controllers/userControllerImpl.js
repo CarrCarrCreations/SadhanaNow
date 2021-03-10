@@ -5,7 +5,10 @@ const authUser = (UserService) =>
     const { email, password } = req.body;
 
     try {
-      const user = await UserService.authUserEmailAndPassword(email, password);
+      const user = await UserService.authUserEmailAndPassword({
+        email,
+        password,
+      });
       res.json(user);
     } catch (error) {
       next(error);
@@ -17,7 +20,7 @@ const getUserProfile = (UserService) =>
     const user = req.user;
 
     try {
-      res.json(await UserService.getLoggedInUserProfile(user));
+      res.json(await UserService.getLoggedInUserProfile({ user }));
     } catch (error) {
       next(error);
     }
@@ -60,7 +63,7 @@ const getUsers = (UserService) =>
 const deleteUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
     try {
-      res.json(await UserService.deleteUser(req.param.id));
+      res.json(await UserService.deleteUser({ _id: `req.param.id` }));
     } catch (error) {
       next(error);
     }
@@ -69,7 +72,7 @@ const deleteUser = (UserService) =>
 const getUserById = (UserService) =>
   asyncHandler(async (req, res, next) => {
     try {
-      res.json(await UserService.getUserById(req.params.id));
+      res.json(await UserService.getUserById({ _id: `req.param.id` }));
     } catch (error) {
       next(error);
     }

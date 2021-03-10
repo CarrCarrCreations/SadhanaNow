@@ -22,22 +22,6 @@ const findOne = (Collection) => async (query = {}) => {
   }
 };
 
-const findById = (UserModel) => async (userId) => {
-  try {
-    return await UserModel.findById(userId).select("-password");
-  } catch (error) {
-    throw new Error("UserRepo: Internal Server Error");
-  }
-};
-
-const findUserByEmail = (UserModel) => async (email) => {
-  try {
-    return await UserModel.findOne({ email });
-  } catch (error) {
-    throw new Error("UserRepo: Invalid email or password");
-  }
-};
-
 const remove = () => async (user) => {
   try {
     user.remove();
@@ -88,20 +72,6 @@ const UserRepo = (UserModel) => {
      * @returns {User}
      */
     findMany: findMany(UserModel),
-    /**
-     * @function findById
-     * @description Find User by supplied ID
-     * @param {string} userId - user ID
-     * @returns {User}
-     */
-    findById: findById(UserModel),
-    /**
-     * @function findUserByEmail
-     * @description Find User by supplied email
-     * @param {string} email - user email
-     * @returns {User}
-     */
-    findUserByEmail: findUserByEmail(UserModel),
     /**
      * @function matchPassword
      * @description Match supplied password to stored password

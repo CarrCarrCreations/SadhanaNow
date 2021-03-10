@@ -3,8 +3,8 @@ import User from "../models/User.js";
 import { Error } from "../middleware/errorMiddleware.js";
 import UserRepo from "../repos/user/UserRepo.js";
 
-const authUserEmailAndPassword = (UserRepo) => async (email, password) => {
-  const user = await UserRepo.findUserByEmail(email);
+const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
+  const user = await UserRepo.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
     return new User({
@@ -79,8 +79,8 @@ const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
   }
 };
 
-const getUserById = (UserRepo) => async (userId) => {
-  const user = await UserRepo.findById(userId);
+const getUserById = (UserRepo) => async ({ userId }) => {
+  const user = await UserRepo.findOne({ userId });
 
   if (user) {
     return user;
@@ -93,8 +93,8 @@ const getAllUsers = (UserRepo) => async () => {
   return await UserRepo.findMany();
 };
 
-const deleteUser = (UserRepo) => async (userId) => {
-  const user = await UserRepo.findById(userId);
+const deleteUser = (UserRepo) => async ({ userId }) => {
+  const user = await UserRepo.findOne({ userId });
 
   if (user) {
     await UserRepo.remove();
