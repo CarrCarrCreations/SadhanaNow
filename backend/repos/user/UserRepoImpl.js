@@ -1,3 +1,11 @@
+const create = (Collection) => async (newEntry) => {
+  try {
+    return await Collection.create(newEntry);
+  } catch (error) {
+    throw new Error("UserRepo: Internal Server Error");
+  }
+};
+
 const find = (UserModel) => async () => {
   try {
     return UserModel.find({});
@@ -51,6 +59,7 @@ const matchPassword = (UserModel) => (password) => {
  */
 const UserRepo = (UserModel) => {
   return {
+    create: create(UserModel),
     /**
      * @function find
      * @description Find all Users

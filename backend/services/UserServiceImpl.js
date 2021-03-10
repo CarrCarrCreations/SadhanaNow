@@ -55,7 +55,7 @@ const updateUserProfile = (UserRepo) => async (user, reqBody) => {
 };
 
 const registerUser = (UserRepo) => async (displayName, email, password) => {
-  const userExists = await UserRepo.findOne({ email });
+  const userExists = await UserRepo.findUserByEmail(email);
   if (userExists) {
     throw Error("User already exists.", 400);
   }

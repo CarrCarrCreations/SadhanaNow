@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-import User from "../models/userModel.js";
 
 const authUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
