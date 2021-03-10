@@ -31,6 +31,15 @@ const remove = () => async (user) => {
   }
 };
 
+const save = () => async (user) => {
+  try {
+    user.save();
+    return true;
+  } catch (error) {
+    throw new Error("UserRepo: Error saving user to database");
+  }
+};
+
 const matchPassword = (UserModel) => (password) => {
   return UserModel.matchPassword(password);
 };
@@ -72,10 +81,17 @@ const UserRepo = (UserModel) => {
     /**
      * @function remove
      * @description Delete a user from the database
-     * @param {string} userId - User ID
+     * @param {User} User object
      * @returns {boolean}
      */
     remove: remove(),
+    /**
+     * @function save
+     * @description Save a user to the database
+     * @param {User} User object
+     * @returns {boolean}
+     */
+    save: save(),
   };
 };
 

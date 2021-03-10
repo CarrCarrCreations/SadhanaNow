@@ -76,29 +76,17 @@ const getUserById = (UserService) =>
     }
   });
 
-// @desc    Update user
-// @route   PUT /api/users/:id
-// @access  Private/Admin
 const updateUser = (UserService) =>
-  asyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
+  asyncHandler(async (req, res, next) => {
+    const userId = req.params.id;
+    const { displayName, email, isAdmin } = req.body;
 
-    if (user) {
-      user.displayName = req.body.displayName || user.displayName;
-      user.email = req.body.email || user.email;
-      user.isAdmin = req.body.isAdmin ?? user.isAdmin;
-
-      const updatedUser = await user.save();
-
-      res.json({
-        _id: updatedUser._id,
-        displayName: updatedUser.displayName,
-        email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
-      });
-    } else {
-      res.status(404);
-      throw new Error("User not found");
+    try {
+      res.json(
+        await UserService.updateUser({ userId, displayName, email, isAdmin })
+      );
+    } catch (error) {
+      next(error);
     }
   });
 
@@ -135,7 +123,13 @@ const userController = (UserService) => {
      * @returns {User} The currently logged in user
      */
     getUserProfile: getUserProfile(UserService),
-
+    /**
+     * @function updateUser
+     * @description Update user
+     * <br>Access: Private/Admin
+     * @route PUT /api/users/:id
+     * @returns {User} The updated user
+     */
     updateUser: updateUser(UserService),
     /**
      * @function updateUserProfile

@@ -104,6 +104,32 @@ const deleteUser = (UserRepo) => async (userId) => {
   }
 };
 
+const updateUser = (UserRepo) => async ({
+  userId,
+  displayName,
+  email,
+  isAdmin,
+}) => {
+  const user = await UserRepo.findById(userId);
+
+  if (user) {
+    user.displayName = displayName || user.displayName;
+    user.email = email || user.email;
+    user.isAdmin = isAdmin ?? user.isAdmin;
+
+    const updatedUser = await UserRepo.save(user);
+
+    return new User({
+      _id: updatedUser._id,
+      displayName: updatedUser.displayName,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    throw new Error("User not found", 404);
+  }
+};
+
 /**
  *  Object containing all helper methods for User objects
  * @module UserService
@@ -164,6 +190,16 @@ const UserService = (UserRepo) => {
      * @returns {Object} Object with `message` parameter
      */
     deleteUser: deleteUser(UserRepo),
+    /**
+     * @function updateUser
+     * @description Update a user's info
+     * @param {string} userId
+     * @param {string} displayName
+     * @param {string} email
+     * @param {boolean} isAdmin
+     * @returns {User} User
+     */
+    updateUser: updateUser(UserRepo),
   };
 };
 
