@@ -41,8 +41,8 @@ const update = (Collection) => async ({ _id, changedEntry }) => {
   }
 };
 
-const matchPassword = (UserModel) => (password) => {
-  return UserModel.matchPassword(password);
+const matchPassword = (Collection) => (password) => {
+  return Collection.matchPassword(password);
 };
 
 /**
@@ -50,7 +50,7 @@ const matchPassword = (UserModel) => (password) => {
  * @module UserRepo
  * @param {Object} UserModel - mongoose Schema
  */
-const UserRepo = (UserModel) => {
+const UserRepo = (Collection) => {
   return {
     /**
      * @function create
@@ -58,42 +58,42 @@ const UserRepo = (UserModel) => {
      * @param {Object} newEntry - object containing new entry's data
      * @returns {User}
      */
-    create: create(UserModel),
+    create: create(Collection),
     /**
      * @function findOne
      * @description Find one entry by provided query
      * @param {Object} query - defaults to {}
      * @returns {User}
      */
-    findOne: findOne(UserModel),
+    findOne: findOne(Collection),
     /**
      * @function findMany
      * @description find many entries by provided query
      * @param {Object} query - defaults to {}
      * @returns {User}
      */
-    findMany: findMany(UserModel),
+    findMany: findMany(Collection),
     /**
      * @function matchPassword
      * @description Match supplied password to stored password
      * @param {string} password - supplied user password
      * @returns {boolean}
      */
-    matchPassword: matchPassword(UserModel),
+    matchPassword: matchPassword(Collection),
     /**
      * @function remove
      * @description Delete a user from the database
      * @param {User} User object
      * @returns {boolean}
      */
-    remove: remove(UserModel),
+    remove: remove(Collection),
     /**
      * @function save
      * @description Save a user to the database
      * @param {User} User object
      * @returns {boolean}
      */
-    update: update(UserModel),
+    update: update(Collection),
   };
 };
 
