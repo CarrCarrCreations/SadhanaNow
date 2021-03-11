@@ -84,8 +84,10 @@ const getUsers = (UserService) =>
 
 const deleteUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
+    const _id = req.params.id;
+
     try {
-      res.json(await UserService.deleteUser({ _id: `req.param.id` }));
+      res.json(await UserService.deleteUser({ _id }));
     } catch (error) {
       next(error);
     }
@@ -93,8 +95,10 @@ const deleteUser = (UserService) =>
 
 const getUserById = (UserService) =>
   asyncHandler(async (req, res, next) => {
+    const _id = req.params.id;
+
     try {
-      res.json(await UserService.getUserById({ _id: `req.param.id` }));
+      res.json(await UserService.getUserById({ _id }));
     } catch (error) {
       next(error);
     }
