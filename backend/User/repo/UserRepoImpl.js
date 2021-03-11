@@ -1,5 +1,14 @@
-import User from "./models/User.js";
 import { Error } from "../../middleware/errorMiddleware.js";
+
+const matchPassword = (Collection) => (password) => {
+  return Collection.matchPassword(password);
+};
+
+const removeEmptyProperties = (obj) => {
+  return Object.entries(obj)
+    .filter(([_, v]) => v != null)
+    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+};
 
 const create = (Collection) => async (newEntry) => {
   try {
@@ -33,12 +42,6 @@ const remove = (Collection) => async ({ _id }) => {
   }
 };
 
-const removeEmptyProperties = (obj) => {
-  return Object.entries(obj)
-    .filter(([_, v]) => v != null)
-    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
-};
-
 const update = (Collection) => async ({ _id, changedEntry }) => {
   try {
     let updatedChangedEntry = removeEmptyProperties(changedEntry);
@@ -47,10 +50,6 @@ const update = (Collection) => async ({ _id, changedEntry }) => {
   } catch (error) {
     throw Error("UserRepo: " + error.message);
   }
-};
-
-const matchPassword = (Collection) => (password) => {
-  return Collection.matchPassword(password);
 };
 
 /**
