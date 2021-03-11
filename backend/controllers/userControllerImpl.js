@@ -26,13 +26,35 @@ const getUserProfile = (UserService) =>
     }
   });
 
-const updateUserProfile = (UserService) =>
+const updateUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const user = req.user;
-    const body = req.body;
+    const _id = req.params.id;
+    const { displayName, email, isAdmin } = req.body;
 
     try {
-      res.json(await UserService.updateUserProfile(user, body));
+      res.json(
+        await UserService.updateUser({
+          _id,
+          changedEntry: { displayName, email, isAdmin },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  });
+
+const updateUserProfile = (UserService) =>
+  asyncHandler(async (req, res, next) => {
+    const _id = req.user._id;
+    const { displayName, email, password } = req.body;
+
+    try {
+      res.json(
+        await UserService.updateUser({
+          _id,
+          changedEntry: { displayName, email, password },
+        })
+      );
     } catch (error) {
       next(error);
     }
@@ -73,23 +95,6 @@ const getUserById = (UserService) =>
   asyncHandler(async (req, res, next) => {
     try {
       res.json(await UserService.getUserById({ _id: `req.param.id` }));
-    } catch (error) {
-      next(error);
-    }
-  });
-
-const updateUser = (UserService) =>
-  asyncHandler(async (req, res, next) => {
-    const _id = req.params.id;
-    const { displayName, email, isAdmin } = req.body;
-
-    try {
-      res.json(
-        await UserService.updateUser({
-          _id,
-          changedEntry: { displayName, email, isAdmin },
-        })
-      );
     } catch (error) {
       next(error);
     }

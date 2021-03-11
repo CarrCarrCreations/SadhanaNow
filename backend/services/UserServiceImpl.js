@@ -31,25 +31,19 @@ const getLoggedInUserProfile = () => (user) => {
   }
 };
 
-const updateUserProfile = (UserRepo) => async (user, reqBody) => {
-  if (user) {
-    user.displayName = reqBody.displayName || user.displayName;
-    user.email = reqBody.email || user.email;
-    if (reqBody.password) {
-      user.password = reqBody.password;
-    }
-
-    const updatedUser = await UserRepo.save();
+const updateUser = (UserRepo) => async ({ _id, changedEntry }) => {
+  try {
+    await UserRepo.update({ _id, changedEntry });
+    const updatedUser = await UserRepo.findOne({ _id });
 
     return new User({
       _id: updatedUser._id,
       displayName: updatedUser.displayName,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
-      token: generateToken(updatedUser._id),
     });
-  } else {
-    throw Error("User not found", 400);
+  } catch (error) {
+    throw Error("UserService: User not found", 404);
   }
 };
 
@@ -103,15 +97,6 @@ const deleteUser = (UserRepo) => async ({ _id }) => {
   }
 };
 
-const updateUser = (UserRepo) => async ({ _id, changedEntry }) => {
-  try {
-    await UserRepo.update({ _id, changedEntry });
-    return await UserRepo.findOne({ _id });
-  } catch (error) {
-    throw Error("UserService: User not found", 404);
-  }
-};
-
 /**
  *  Object containing all helper methods for User objects
  * @module UserService
@@ -135,14 +120,6 @@ const UserService = (UserRepo) => {
      * @returns {User} User
      */
     getLoggedInUserProfile: getLoggedInUserProfile(),
-    /**
-     * @function updateUserProfile
-     * @description Update the currently logged in user
-     * @param {User} user - User supplied from req.user
-     * @param {Object} reqBody - body supplied from the req.body
-     * @returns {User} User
-     */
-    updateUserProfile: updateUserProfile(UserRepo),
     /**
      * @function registerUser
      * @description Register a new User

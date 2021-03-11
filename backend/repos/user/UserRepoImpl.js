@@ -33,9 +33,17 @@ const remove = (Collection) => async ({ _id }) => {
   }
 };
 
+const removeEmptyProperties = (obj) => {
+  return Object.entries(obj)
+    .filter(([_, v]) => v != null)
+    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+};
+
 const update = (Collection) => async ({ _id, changedEntry }) => {
   try {
-    return await Collection.update({ _id }, { $set: changedEntry });
+    let updatedChangedEntry = removeEmptyProperties(changedEntry);
+
+    return await Collection.update({ _id }, { $set: updatedChangedEntry });
   } catch (error) {
     throw Error("UserRepo: " + error.message);
   }
