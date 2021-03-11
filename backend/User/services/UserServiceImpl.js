@@ -1,6 +1,6 @@
-import generateToken from "../utils/generateToken.js";
-import User from "../models/User.js";
-import { Error } from "../middleware/errorMiddleware.js";
+import generateToken from "../../utils/generateToken.js";
+import User from "../repo/models/User.js";
+import { Error } from "../../middleware/errorMiddleware.js";
 
 const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
   const user = await UserRepo.findOne({ email });

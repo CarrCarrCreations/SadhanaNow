@@ -1,4 +1,4 @@
-import User from "../../models/User.js";
+import User from "./models/User.js";
 import { Error } from "../../middleware/errorMiddleware.js";
 
 const create = (Collection) => async (newEntry) => {
