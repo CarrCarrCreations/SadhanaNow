@@ -1,10 +1,19 @@
 import request from "supertest";
+
 import app from "../../../app.js";
 import users from "../mock-data/users.js";
+import UserModel from "../../repo/models/userModel";
+import connectDB from "../../../config/db.js";
+
+connectDB(process.env.MONGO_TEST_URI);
 
 const endpointUrl = "/api/users/";
 
 describe(endpointUrl, () => {
+  beforeEach(async () => {
+    UserModel.collection.drop();
+  });
+
   it(`POST ${endpointUrl}`, async () => {
     const response = await request(app).post(endpointUrl).send(users[0]);
 
