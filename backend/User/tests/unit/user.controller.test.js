@@ -1,7 +1,6 @@
 import httpMocks from "node-mocks-http";
 
 import UserController from "../../controller/userControllerImpl.js";
-import User from "../../repo/models/User.js";
 import UserService from "../../services/UserService.js";
 import users from "../mock-data/users.js";
 

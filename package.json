@@ -12,7 +12,7 @@
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d",
     "doc": "jsdoc -c backend/jsdoc.json",
-    "test": "jest --watchAll"
+    "test": "jest --testEnvironment=node --verbose --forceExit --watchAll --maxWorkers=1"
   },
   "repository": {
     "type": "git",
