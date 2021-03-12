@@ -10,7 +10,7 @@ connectDB(process.env.MONGO_TEST_URI);
 const endpointUrl = "/api/users/";
 
 describe(endpointUrl, () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     UserModel.collection.drop();
   });
 
