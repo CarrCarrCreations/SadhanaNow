@@ -11,7 +11,19 @@ const endpointUrl = "/api/users/";
 
 describe(endpointUrl, () => {
   afterEach(async () => {
-    UserModel.collection.drop();
+    await UserModel.collection
+      .drop()
+      .then(() => {
+        console.log("Successfully dropped User table.");
+      })
+      .catch((error) => {
+        let message;
+        if (error.message == "ns not found")
+          message = "User collection does not exist, so it cannot be dropped. ";
+        else message = error.message;
+
+        console.log(`Error dropping User collection - ${message}`);
+      });
   });
 
   it(`POST ${endpointUrl}`, async () => {
@@ -20,5 +32,14 @@ describe(endpointUrl, () => {
     expect(response.statusCode).toBe(201);
     expect(response.body.displayName).toBe(users[0].displayName);
     expect(response.body.email).toBe(users[0].email);
+  });
+
+  it(`should return 500 on malformed data with POST ${endpointUrl}`, async () => {
+    const response = await request(app).post(endpointUrl).send({
+      displayName: "Missing password property",
+      email: "liam@example.com",
+    });
+
+    expect(response.statusCode).toBe(500);
   });
 });

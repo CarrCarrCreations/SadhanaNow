@@ -69,6 +69,7 @@ const registerUser = (UserService) =>
         .status(201)
         .json(await UserService.registerUser({ displayName, email, password }));
     } catch (error) {
+      res.status(500);
       next(error);
     }
   });
