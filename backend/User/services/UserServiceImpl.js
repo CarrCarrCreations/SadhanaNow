@@ -1,6 +1,5 @@
 import generateToken from "../../utils/generateToken.js";
 import User from "../repo/models/User.js";
-import { Error } from "../../middleware/errorMiddleware.js";
 
 const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
   const user = await UserRepo.findOne({ email });
@@ -14,7 +13,7 @@ const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
       token: generateToken(user._id),
     });
   } else {
-    throw Error("UserService: Invalid email or password", 400);
+    throw new Error("UserService: Invalid email or password", 400);
   }
 };
 
@@ -27,7 +26,7 @@ const getLoggedInUserProfile = () => (user) => {
       isAdmin: user.isAdmin,
     });
   } else {
-    throw Error("User not found", 400);
+    throw new Error("User not found", 400);
   }
 };
 
@@ -43,14 +42,14 @@ const updateUser = (UserRepo) => async ({ _id, changedEntry }) => {
       isAdmin: updatedUser.isAdmin,
     });
   } catch (error) {
-    throw Error("UserService: User not found", 404);
+    throw new Error("UserService: User not found", 404);
   }
 };
 
 const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
   const userExists = await UserRepo.findOne({ email });
   if (userExists) {
-    throw Error("User already exists.", 400);
+    throw new Error("User already exists.", 400);
   }
 
   const user = await UserRepo.create({
@@ -68,7 +67,7 @@ const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
       token: generateToken(user._id),
     });
   } else {
-    throw Error("Invalid user data.", 400);
+    throw new Error("Invalid user data.", 400);
   }
 };
 
@@ -78,7 +77,7 @@ const getUserById = (UserRepo) => async ({ _id }) => {
   if (user) {
     return user;
   } else {
-    throw Error("User not found", 404);
+    throw new Error("User not found", 404);
   }
 };
 
@@ -93,7 +92,7 @@ const deleteUser = (UserRepo) => async ({ _id }) => {
     await UserRepo.remove({ _id });
     return { message: "User removed" };
   } else {
-    throw Error("User not found", 404);
+    throw new Error("User not found", 404);
   }
 };
 

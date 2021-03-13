@@ -1,5 +1,3 @@
-import { Error } from "../../middleware/errorMiddleware.js";
-
 const matchPassword = (Collection) => (password) => {
   return Collection.matchPassword(password);
 };
@@ -14,7 +12,9 @@ const create = (Collection) => async (newEntry) => {
   try {
     return await Collection.create(newEntry);
   } catch (error) {
-    throw Error("UserRepo: Error while creating new database entry");
+    throw new Error(
+      `UserRepo - Error while creating new database entry: ${error.message}`
+    );
   }
 };
 
@@ -22,7 +22,7 @@ const findMany = (Collection) => async (query = {}) => {
   try {
     return await Collection.find(query);
   } catch (error) {
-    throw Error("UserRepo: Error while reading from database");
+    throw new Error("UserRepo: Error while reading from database");
   }
 };
 
@@ -30,7 +30,7 @@ const findOne = (Collection) => async (query = {}) => {
   try {
     return await Collection.findOne(query);
   } catch (error) {
-    throw Error("UserRepo: Error while reading from database");
+    throw new Error("UserRepo: Error while reading from database");
   }
 };
 
@@ -38,7 +38,7 @@ const remove = (Collection) => async ({ _id }) => {
   try {
     return await Collection.remove({ _id });
   } catch (error) {
-    throw Error("UserRepo: Error while deleting entry from database");
+    throw new Error("UserRepo: Error while deleting entry from database");
   }
 };
 
@@ -48,7 +48,7 @@ const update = (Collection) => async ({ _id, changedEntry }) => {
 
     return await Collection.update({ _id }, { $set: updatedChangedEntry });
   } catch (error) {
-    throw Error("UserRepo: " + error.message);
+    throw new Error("UserRepo: " + error.message);
   }
 };
 
