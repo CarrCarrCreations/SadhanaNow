@@ -22,7 +22,7 @@ const registeredUser = {
 beforeEach(() => {
   req = httpMocks.createRequest();
   res = httpMocks.createResponse();
-  next = null;
+  next = jest.fn();
 });
 
 describe("UserController.registerUser", () => {
@@ -58,5 +58,16 @@ describe("UserController.registerUser", () => {
     await controller.registerUser(req, res, next);
 
     expect(res._getJSONData()).toStrictEqual(registeredUser);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Password property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserService.registerUser.mockReturnValue(rejectedPromise);
+
+    await controller.registerUser(req, res, next);
+
+    expect(next).toBeCalledWith(errorMessage);
   });
 });
