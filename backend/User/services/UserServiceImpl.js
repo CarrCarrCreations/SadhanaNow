@@ -47,18 +47,22 @@ const updateUser = (UserRepo) => async ({ _id, changedEntry }) => {
 };
 
 const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
-  const userExists = await UserRepo.findOne({ email });
-  if (userExists) {
-    throw new Error("User already exists.", 400);
+  try {
+    const userExists = await UserRepo.findOne({ email });
+    if (userExists) {
+      throw new Error("UserService - User already exists.", 400);
+    }
+  } catch (error) {
+    throw new Error(error.message, 400);
   }
 
-  const user = await UserRepo.create({
-    displayName,
-    email,
-    password,
-  });
+  try {
+    const user = await UserRepo.create({
+      displayName,
+      email,
+      password,
+    });
 
-  if (user) {
     return new User({
       _id: user._id,
       displayName: user.displayName,
@@ -66,8 +70,8 @@ const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
     });
-  } else {
-    throw new Error("Invalid user data.", 400);
+  } catch (error) {
+    throw new Error(error.message, 400);
   }
 };
 
