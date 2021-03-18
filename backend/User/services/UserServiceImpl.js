@@ -86,7 +86,11 @@ const getUserById = (UserRepo) => async ({ _id }) => {
 };
 
 const getAllUsers = (UserRepo) => async () => {
-  return await UserRepo.findMany();
+  try {
+    return await UserRepo.findMany();
+  } catch (error) {
+    throw new Error(error.message, 400);
+  }
 };
 
 const deleteUser = (UserRepo) => async ({ _id }) => {

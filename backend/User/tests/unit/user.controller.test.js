@@ -7,6 +7,7 @@ import users from "../mock-data/users.js";
 let req, res, next, user;
 
 UserService.registerUser = jest.fn();
+UserService.getAllUsers = jest.fn();
 
 const controller = UserController(UserService);
 
@@ -23,6 +24,35 @@ beforeEach(() => {
   req = httpMocks.createRequest();
   res = httpMocks.createResponse();
   next = jest.fn();
+});
+
+describe("UserController.getUsers", () => {
+  it("should have a getUsers function", () => {
+    expect(typeof controller.getUsers).toBe("function");
+  });
+
+  it("should call UserService.getAllUsers()", async () => {
+    await controller.getUsers(req, res, next);
+    expect(UserService.getAllUsers).toBeCalled();
+  });
+
+  it("should return response with status 200 and all the users", async () => {
+    UserService.getAllUsers.mockReturnValue(users);
+    await controller.getUsers(req, res, next);
+
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(users);
+  });
+
+  // it("should handle errors", async () => {
+  //   const errorMessage = { message: "Password property missing" };
+  //   const rejectedPromise = Promise.reject(errorMessage);
+
+  //   UserService.getAllUsers.mockReturnValue(rejectedPromise);
+
+  //   // await controller.getAllUsers(req, res, next);
+  // });
 });
 
 describe("UserController.registerUser", () => {

@@ -41,5 +41,8 @@ describe(endpointUrl, () => {
     });
 
     expect(response.statusCode).toBe(500);
+    expect(response.body.message).toStrictEqual(
+      "UserRepo - Error while creating new database entry: User validation failed: password: Path `password` is required."
+    );
   });
 });
