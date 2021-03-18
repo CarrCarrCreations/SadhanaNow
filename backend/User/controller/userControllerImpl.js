@@ -46,13 +46,13 @@ const updateUser = (UserService) =>
 const updateUserProfile = (UserService) =>
   asyncHandler(async (req, res, next) => {
     const _id = req.user._id;
-    const { displayName, email, password } = req.body;
+    const { displayName, email, password, isAdmin } = req.body;
 
     try {
       res.json(
         await UserService.updateUser({
           _id,
-          changedEntry: { displayName, email, password },
+          changedEntry: { displayName, email, password, isAdmin },
         })
       );
     } catch (error) {
@@ -77,7 +77,7 @@ const registerUser = (UserService) =>
 const getUsers = (UserService) =>
   asyncHandler(async (req, res, next) => {
     try {
-      res.json(await UserService.getAllUsers());
+      res.status(200).json(await UserService.getAllUsers());
     } catch (error) {
       next(error);
     }

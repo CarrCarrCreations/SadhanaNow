@@ -8,6 +8,7 @@ import connectDB from "../../../config/db.js";
 connectDB(process.env.MONGO_TEST_URI);
 
 const endpointUrl = "/api/users/";
+const updateProfileEndPointUrl = "/api/users/profile";
 
 describe(endpointUrl, () => {
   afterEach(async () => {
@@ -26,7 +27,25 @@ describe(endpointUrl, () => {
       });
   });
 
-  it(`POST ${endpointUrl}`, async () => {
+  test(`GET ${endpointUrl}`, async () => {
+    // Create a request to register a new user
+    const newUser = await request(app).post(endpointUrl).send(users[0]);
+    const newUser2 = await request(app).post(endpointUrl).send(users[1]);
+
+    // Update one newUser to isAdmin = {true} so we can run the request
+    await request(app)
+      .put(updateProfileEndPointUrl)
+      .set("Authorization", "Bearer " + newUser.body.token)
+      .send({ isAdmin: true });
+
+    const response = await request(app)
+      .get(endpointUrl)
+      .set("Authorization", "Bearer " + newUser.body.token);
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  test(`POST ${endpointUrl}`, async () => {
     const response = await request(app).post(endpointUrl).send(users[0]);
 
     expect(response.statusCode).toBe(201);

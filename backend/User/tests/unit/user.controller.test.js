@@ -45,14 +45,16 @@ describe("UserController.getUsers", () => {
     expect(res._getJSONData()).toStrictEqual(users);
   });
 
-  // it("should handle errors", async () => {
-  //   const errorMessage = { message: "Password property missing" };
-  //   const rejectedPromise = Promise.reject(errorMessage);
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Error while finding all users." };
+    const rejectedPromise = Promise.reject(errorMessage);
 
-  //   UserService.getAllUsers.mockReturnValue(rejectedPromise);
+    UserService.getAllUsers.mockReturnValue(rejectedPromise);
 
-  //   // await controller.getAllUsers(req, res, next);
-  // });
+    await controller.getUsers(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(errorMessage);
+  });
 });
 
 describe("UserController.registerUser", () => {
