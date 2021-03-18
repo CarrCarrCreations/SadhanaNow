@@ -28,21 +28,26 @@ describe(endpointUrl, () => {
   });
 
   test(`GET ${endpointUrl}`, async () => {
-    // Create a request to register a new user
+    // Create 2 new users for this test
     const newUser = await request(app).post(endpointUrl).send(users[0]);
     const newUser2 = await request(app).post(endpointUrl).send(users[1]);
 
-    // Update one newUser to isAdmin = {true} so we can run the request
+    // Update one newUser to isAdmin = {true} so we can send the request
     await request(app)
       .put(updateProfileEndPointUrl)
       .set("Authorization", "Bearer " + newUser.body.token)
       .send({ isAdmin: true });
 
+    // Send request to protected/admin endpoint
     const response = await request(app)
       .get(endpointUrl)
       .set("Authorization", "Bearer " + newUser.body.token);
 
     expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.body)).toBeTruthy();
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].displayName).toBe(newUser.body.displayName);
+    expect(response.body[1].displayName).toBe(newUser2.body.displayName);
   });
 
   test(`POST ${endpointUrl}`, async () => {
