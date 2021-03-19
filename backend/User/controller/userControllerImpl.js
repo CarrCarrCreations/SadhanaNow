@@ -5,11 +5,17 @@ const authUser = (UserService) =>
     const { email, password } = req.body;
 
     try {
-      const user = await UserService.authUserEmailAndPassword({
+      const { response, error } = await UserService.authUserEmailAndPassword({
         email,
         password,
       });
-      res.json(user);
+
+      if (error) {
+        res.status(error.statusCode);
+        throw new Error(error.message);
+      } else {
+        res.json(response);
+      }
     } catch (error) {
       next(error);
     }
