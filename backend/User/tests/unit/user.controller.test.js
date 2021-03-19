@@ -8,8 +8,9 @@ let req, res, next, user;
 
 UserService.registerUser = jest.fn();
 UserService.getAllUsers = jest.fn();
+UserService.getUserById = jest.fn();
 
-const controller = UserController(UserService);
+const userController = UserController(UserService);
 
 const registeredUser = {
   _id: "604babb1d2455814bbc9392e",
@@ -26,19 +27,55 @@ beforeEach(() => {
   next = jest.fn();
 });
 
+describe("UserController.getUserById", () => {
+  it("should have a getUserById", () => {
+    expect(typeof userController.getUserById).toBe("function");
+  });
+
+  it("should call UserService.getUserById()", async () => {
+    req.params.id = "6036907cec0ac70918837819";
+    await userController.getUserById(req, res, next);
+
+    expect(UserService.getUserById).toBeCalledWith({
+      _id: "6036907cec0ac70918837819",
+    });
+  });
+
+  it("should return response with status 200 and user object", async () => {
+    UserService.getUserById.mockReturnValue(users[0]);
+
+    await userController.getUserById(req, res, next);
+
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(users[0]);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "id property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserService.getUserById.mockReturnValue(rejectedPromise);
+
+    await userController.getUserById(req, res, next);
+
+    expect(next).toBeCalledWith(errorMessage);
+  });
+});
+
 describe("UserController.getUsers", () => {
   it("should have a getUsers function", () => {
-    expect(typeof controller.getUsers).toBe("function");
+    expect(typeof userController.getUsers).toBe("function");
   });
 
   it("should call UserService.getAllUsers()", async () => {
-    await controller.getUsers(req, res, next);
+    await userController.getUsers(req, res, next);
     expect(UserService.getAllUsers).toBeCalled();
   });
 
   it("should return response with status 200 and all the users", async () => {
     UserService.getAllUsers.mockReturnValue(users);
-    await controller.getUsers(req, res, next);
+    await userController.getUsers(req, res, next);
 
     expect(res.statusCode).toBe(200);
     expect(res._isEndCalled()).toBeTruthy();
@@ -51,7 +88,7 @@ describe("UserController.getUsers", () => {
 
     UserService.getAllUsers.mockReturnValue(rejectedPromise);
 
-    await controller.getUsers(req, res, next);
+    await userController.getUsers(req, res, next);
 
     expect(next).toHaveBeenCalledWith(errorMessage);
   });
@@ -64,11 +101,11 @@ describe("UserController.registerUser", () => {
   });
 
   it("should have a registerUser function", () => {
-    expect(typeof controller.registerUser).toBe("function");
+    expect(typeof userController.registerUser).toBe("function");
   });
 
   it("it should call UserService.registerUser", () => {
-    controller.registerUser(req, res, next);
+    userController.registerUser(req, res, next);
 
     expect(UserService.registerUser).toBeCalledWith({
       displayName: user.displayName,
@@ -78,7 +115,7 @@ describe("UserController.registerUser", () => {
   });
 
   it("should return 201 response code", async () => {
-    await controller.registerUser(req, res, next);
+    await userController.registerUser(req, res, next);
 
     expect(res.statusCode).toBe(201);
     expect(res._isEndCalled()).toBeTruthy();
@@ -87,7 +124,7 @@ describe("UserController.registerUser", () => {
   it("should return json body in response", async () => {
     UserService.registerUser.mockReturnValue(registeredUser);
 
-    await controller.registerUser(req, res, next);
+    await userController.registerUser(req, res, next);
 
     expect(res._getJSONData()).toStrictEqual(registeredUser);
   });
@@ -98,7 +135,7 @@ describe("UserController.registerUser", () => {
 
     UserService.registerUser.mockReturnValue(rejectedPromise);
 
-    await controller.registerUser(req, res, next);
+    await userController.registerUser(req, res, next);
 
     expect(next).toBeCalledWith(errorMessage);
   });
