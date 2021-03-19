@@ -76,6 +76,23 @@ describe(endpointUrl, () => {
     expect(response.body.email).toBe(users[0].email);
   });
 
+  it(`should return 404 when non-existent user ID given with GET ${endpointUrl}:id`, async () => {
+    const newUser = await request(app).post(endpointUrl).send(users[0]);
+
+    // Update one newUser to isAdmin = {true} so we can send the request
+    await request(app)
+      .put(updateProfileEndPointUrl)
+      .set("Authorization", "Bearer " + newUser.body.token)
+      .send({ isAdmin: true });
+
+    const response = await request(app)
+      .get(endpointUrl + "6036907cec0ac70918837817")
+      .set("Authorization", "Bearer " + newUser.body.token);
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toStrictEqual("User not found");
+  });
+
   it(`should return 500 on malformed data with POST ${endpointUrl}`, async () => {
     const response = await request(app).post(endpointUrl).send({
       displayName: "Missing password property",

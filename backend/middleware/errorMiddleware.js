@@ -1,3 +1,10 @@
+const CustomError = (message, status, err) => {
+  return {
+    message,
+    err,
+    status,
+  };
+};
 const notFound = (req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
   res.status(404);
@@ -5,6 +12,7 @@ const notFound = (req, res, next) => {
 };
 
 const errorHandler = (err, req, res, next) => {
+  console.log(err);
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
   res.json({
