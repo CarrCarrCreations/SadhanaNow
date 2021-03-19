@@ -1,29 +1,38 @@
 import generateToken from "../../utils/generateToken.js";
 import User from "../repo/models/User.js";
 
+const response = (payload) => {
+  return {
+    response: payload,
+    error: null,
+  };
+};
+const errorResponse = (statusCode, message) => {
+  return {
+    response: null,
+    error: {
+      statusCode,
+      message,
+    },
+  };
+};
+
 const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
   try {
     const user = await UserRepo.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-      return {
-        response: new User({
+      return response(
+        new User({
           _id: user._id,
           displayName: user.displayName,
           email: user.email,
           isAdmin: user.isAdmin,
           token: generateToken(user._id),
-        }),
-        error: null,
-      };
+        })
+      );
     } else {
-      return {
-        response: null,
-        error: {
-          statusCode: 400,
-          message: "UserService: Invalid email or password",
-        },
-      };
+      return errorResponse(400, "UserService: Invalid email or password");
     }
   } catch (error) {
     throw new Error(error.message);
