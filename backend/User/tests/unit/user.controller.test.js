@@ -12,6 +12,7 @@ UserService.getAllUsers = jest.fn();
 UserService.getUserById = jest.fn();
 UserService.updateUser = jest.fn();
 UserService.authUserEmailAndPassword = jest.fn();
+UserService.getLoggedInUserProfile = jest.fn();
 
 const userController = UserController(UserService);
 
@@ -93,6 +94,42 @@ describe("UserController.getUsers", () => {
     UserService.getAllUsers.mockReturnValue(rejectedPromise);
 
     await userController.getUsers(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(errorMessage);
+  });
+});
+
+describe("UserController.getUserProfile", () => {
+  it("should have a getUserProfile function", () => {
+    expect(typeof userController.getUserProfile).toBe("function");
+  });
+
+  it("should call UserService.getLoggedInUserProfile()", async () => {
+    await userController.getUserProfile(req, res, next);
+    expect(UserService.getLoggedInUserProfile).toHaveBeenCalledWith({
+      user: req.user,
+    });
+  });
+
+  it("should return response with status 200 and all the users", async () => {
+    UserService.getLoggedInUserProfile.mockReturnValue({
+      response: users[0],
+      error: null,
+    });
+    await userController.getUserProfile(req, res, next);
+
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(users[0]);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Error while finding all users." };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserService.getLoggedInUserProfile.mockReturnValue(rejectedPromise);
+
+    await userController.getUserProfile(req, res, next);
 
     expect(next).toHaveBeenCalledWith(errorMessage);
   });
@@ -241,7 +278,7 @@ describe("UserController.updateUserProfile", () => {
 });
 
 describe("UserController.authUser", () => {
-  it("should have a authUser", () => {
+  it("should have an authUser", () => {
     expect(typeof userController.authUser).toBe("function");
   });
 
