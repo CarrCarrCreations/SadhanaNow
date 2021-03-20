@@ -11,6 +11,7 @@ UserService.registerUser = jest.fn();
 UserService.getAllUsers = jest.fn();
 UserService.getUserById = jest.fn();
 UserService.updateUser = jest.fn();
+UserService.authUserEmailAndPassword = jest.fn();
 
 const userController = UserController(UserService);
 
@@ -234,6 +235,48 @@ describe("UserController.updateUserProfile", () => {
     UserService.updateUser.mockReturnValue(rejectedPromise);
 
     await userController.updateUser(req, res, next);
+
+    expect(next).toBeCalledWith(errorMessage);
+  });
+});
+
+describe("UserController.authUser", () => {
+  it("should have a authUser", () => {
+    expect(typeof userController.authUser).toBe("function");
+  });
+
+  it("should call UserService.authUserEmailAndPassword()", async () => {
+    req.body.email = "admin@example.com";
+    req.body.password = 123456;
+
+    await userController.authUser(req, res, next);
+
+    expect(UserService.authUserEmailAndPassword).toBeCalledWith({
+      email: "admin@example.com",
+      password: 123456,
+    });
+  });
+
+  it("should return response with status 200 and user object", async () => {
+    UserService.authUserEmailAndPassword.mockReturnValue({
+      response: users[0],
+      error: null,
+    });
+
+    await userController.authUser(req, res, next);
+
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(users[0]);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "id property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserService.authUserEmailAndPassword.mockReturnValue(rejectedPromise);
+
+    await userController.authUser(req, res, next);
 
     expect(next).toBeCalledWith(errorMessage);
   });
