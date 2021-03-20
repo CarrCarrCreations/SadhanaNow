@@ -90,7 +90,7 @@ describe(endpointUrl, () => {
       .set("Authorization", "Bearer " + newUser.body.token);
 
     expect(response.statusCode).toBe(404);
-    expect(response.body.message).toStrictEqual("User not found");
+    expect(response.body.message).toStrictEqual("UserService: User not found.");
   });
 
   it(`should return 500 on malformed data with POST ${endpointUrl}`, async () => {
