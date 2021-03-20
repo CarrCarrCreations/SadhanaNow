@@ -13,7 +13,7 @@ const updateProfileEndPointUrl = `${endpointUrl}profile`;
 let adminUser;
 
 describe(endpointUrl, () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     adminUser = await request(app).post(endpointUrl).send(users[0]);
 
     await request(app)
@@ -21,7 +21,7 @@ describe(endpointUrl, () => {
       .set("Authorization", "Bearer " + adminUser.body.token)
       .send({ isAdmin: true });
   });
-  afterEach(async () => {
+  afterAll(async () => {
     await UserModel.collection
       .drop()
       .then(() => {
@@ -64,11 +64,11 @@ describe(endpointUrl, () => {
   });
 
   test(`POST ${endpointUrl}`, async () => {
-    const response = await request(app).post(endpointUrl).send(users[1]);
+    const response = await request(app).post(endpointUrl).send(users[3]);
 
     expect(response.statusCode).toBe(201);
-    expect(response.body.displayName).toBe(users[1].displayName);
-    expect(response.body.email).toBe(users[1].email);
+    expect(response.body.displayName).toBe(users[3].displayName);
+    expect(response.body.email).toBe(users[3].email);
   });
 
   it(`should return 404 when non-existent user ID given with GET ${endpointUrl}:id`, async () => {
