@@ -10,7 +10,17 @@ connectDB(process.env.MONGO_TEST_URI);
 const endpointUrl = "/api/users/";
 const updateProfileEndPointUrl = `${endpointUrl}profile`;
 
+let adminUser;
+
 describe(endpointUrl, () => {
+  beforeEach(async () => {
+    adminUser = await request(app).post(endpointUrl).send(users[0]);
+
+    await request(app)
+      .put(updateProfileEndPointUrl)
+      .set("Authorization", "Bearer " + adminUser.body.token)
+      .send({ isAdmin: true });
+  });
   afterEach(async () => {
     await UserModel.collection
       .drop()
@@ -28,66 +38,44 @@ describe(endpointUrl, () => {
   });
 
   test(`GET ${endpointUrl}`, async () => {
-    // Create 2 new users for this test
-    const newUser = await request(app).post(endpointUrl).send(users[0]);
-    const newUser2 = await request(app).post(endpointUrl).send(users[1]);
+    const newUser = await request(app).post(endpointUrl).send(users[1]);
 
-    // Update one newUser to isAdmin = {true} so we can send the request
-    await request(app)
-      .put(updateProfileEndPointUrl)
-      .set("Authorization", "Bearer " + newUser.body.token)
-      .send({ isAdmin: true });
-
-    // Send request to protected/admin endpoint
+    // Send request to protected/admin endpoint using adminUser JWT Token
     const response = await request(app)
       .get(endpointUrl)
-      .set("Authorization", "Bearer " + newUser.body.token);
+      .set("Authorization", "Bearer " + adminUser.body.token);
 
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBeTruthy();
     expect(response.body.length).toBe(2);
-    expect(response.body[0].displayName).toBe(newUser.body.displayName);
-    expect(response.body[1].displayName).toBe(newUser2.body.displayName);
+    expect(response.body[1].displayName).toBe(newUser.body.displayName);
   });
 
   test("GET " + endpointUrl + ":id", async () => {
-    const newUser = await request(app).post(endpointUrl).send(users[0]);
-    const newUser2 = await request(app).post(endpointUrl).send(users[1]);
+    const newUser = await request(app).post(endpointUrl).send(users[2]);
 
-    // Update one newUser to isAdmin = {true} so we can send the request
-    await request(app)
-      .put(updateProfileEndPointUrl)
-      .set("Authorization", "Bearer " + newUser.body.token)
-      .send({ isAdmin: true });
-
+    // Send request to protected/admin endpoint using adminUser JWT Token
     const response = await request(app)
-      .get(endpointUrl + newUser2.body._id)
-      .set("Authorization", "Bearer " + newUser.body.token);
+      .get(endpointUrl + newUser.body._id)
+      .set("Authorization", "Bearer " + adminUser.body.token);
 
     expect(response.statusCode).toBe(200);
-    expect(response.body._id).toStrictEqual(newUser2.body._id);
+    expect(response.body._id).toStrictEqual(newUser.body._id);
   });
 
   test(`POST ${endpointUrl}`, async () => {
-    const response = await request(app).post(endpointUrl).send(users[0]);
+    const response = await request(app).post(endpointUrl).send(users[1]);
 
     expect(response.statusCode).toBe(201);
-    expect(response.body.displayName).toBe(users[0].displayName);
-    expect(response.body.email).toBe(users[0].email);
+    expect(response.body.displayName).toBe(users[1].displayName);
+    expect(response.body.email).toBe(users[1].email);
   });
 
   it(`should return 404 when non-existent user ID given with GET ${endpointUrl}:id`, async () => {
-    const newUser = await request(app).post(endpointUrl).send(users[0]);
-
-    // Update one newUser to isAdmin = {true} so we can send the request
-    await request(app)
-      .put(updateProfileEndPointUrl)
-      .set("Authorization", "Bearer " + newUser.body.token)
-      .send({ isAdmin: true });
-
+    // Send request to protected/admin endpoint using adminUser JWT Token
     const response = await request(app)
       .get(endpointUrl + "6036907cec0ac70918837817")
-      .set("Authorization", "Bearer " + newUser.body.token);
+      .set("Authorization", "Bearer " + adminUser.body.token);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toStrictEqual("UserService: User not found.");
