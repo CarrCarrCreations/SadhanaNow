@@ -3,6 +3,7 @@ import httpMocks from "node-mocks-http";
 import UserController from "../../controller/userControllerImpl.js";
 import UserService from "../../services/UserService.js";
 import users from "../mock-data/users.js";
+import registeredUser from "../mock-data/registeredUsers.js";
 
 let req, res, next, user;
 
@@ -11,15 +12,6 @@ UserService.getAllUsers = jest.fn();
 UserService.getUserById = jest.fn();
 
 const userController = UserController(UserService);
-
-const registeredUser = {
-  _id: "604babb1d2455814bbc9392e",
-  displayName: "liam",
-  email: "testLiam@example.com",
-  isAdmin: false,
-  token:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNGJhYmIxZDI0NTU4MTRiYmM5MzkyZSIsImlhdCI6MTYxNTU3MTg5MCwiZXhwIjoxNjE4MTYzODkwfQ.x0vNHqtMx8VG9oPVrCkWFnWB2MzoJOw0BQQTZZ8XZfQ",
-};
 
 beforeEach(() => {
   req = httpMocks.createRequest();

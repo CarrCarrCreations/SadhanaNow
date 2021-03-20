@@ -30,7 +30,7 @@ describe(endpointUrl, () => {
       .catch((error) => {
         let message;
         if (error.message == "ns not found")
-          message = "User collection does not exist, so it cannot be dropped. ";
+          message = "User collection does not exist, so it cannot be dropped.";
         else message = error.message;
 
         console.log(`Error dropping User collection - ${message}`);
