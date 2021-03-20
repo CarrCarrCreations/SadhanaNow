@@ -44,7 +44,7 @@ describe("UserController.getUserById", () => {
   it("should return response with status 200 and user object", async () => {
     UserService.getUserById.mockReturnValue({
       response: users[0],
-      error: false,
+      error: null,
     });
 
     await userController.getUserById(req, res, next);
@@ -79,7 +79,7 @@ describe("UserController.getUsers", () => {
   it("should return response with status 200 and all the users", async () => {
     UserService.getAllUsers.mockReturnValue({
       response: users,
-      error: false,
+      error: null,
     });
     await userController.getUsers(req, res, next);
 
@@ -123,7 +123,7 @@ describe("UserController.registerUser", () => {
   it("should return 201 response code", async () => {
     UserService.registerUser.mockReturnValue({
       response: registeredUser,
-      error: false,
+      error: null,
     });
 
     await userController.registerUser(req, res, next);
@@ -135,7 +135,7 @@ describe("UserController.registerUser", () => {
   it("should return json body in response", async () => {
     UserService.registerUser.mockReturnValue({
       response: registeredUser,
-      error: false,
+      error: null,
     });
 
     await userController.registerUser(req, res, next);
