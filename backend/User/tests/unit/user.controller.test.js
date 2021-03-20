@@ -13,6 +13,7 @@ UserService.getUserById = jest.fn();
 UserService.updateUser = jest.fn();
 UserService.authUserEmailAndPassword = jest.fn();
 UserService.getLoggedInUserProfile = jest.fn();
+UserService.deleteUser = jest.fn();
 
 const userController = UserController(UserService);
 
@@ -27,7 +28,7 @@ beforeEach(() => {
 });
 
 describe("UserController.getUserById", () => {
-  it("should have a getUserById", () => {
+  it("should have a getUserById function", () => {
     expect(typeof userController.getUserById).toBe("function");
   });
 
@@ -191,7 +192,7 @@ describe("UserController.registerUser", () => {
 });
 
 describe("UserController.updateUser", () => {
-  it("should have a updateUser", () => {
+  it("should have a updateUser function", () => {
     expect(typeof userController.updateUser).toBe("function");
   });
 
@@ -235,7 +236,7 @@ describe("UserController.updateUser", () => {
 });
 
 describe("UserController.updateUserProfile", () => {
-  it("should have a updateUserProfile", () => {
+  it("should have a updateUserProfile function", () => {
     expect(typeof userController.updateUserProfile).toBe("function");
   });
 
@@ -278,7 +279,7 @@ describe("UserController.updateUserProfile", () => {
 });
 
 describe("UserController.authUser", () => {
-  it("should have an authUser", () => {
+  it("should have an authUser function", () => {
     expect(typeof userController.authUser).toBe("function");
   });
 
@@ -314,6 +315,47 @@ describe("UserController.authUser", () => {
     UserService.authUserEmailAndPassword.mockReturnValue(rejectedPromise);
 
     await userController.authUser(req, res, next);
+
+    expect(next).toBeCalledWith(errorMessage);
+  });
+});
+
+describe("UserController.deleteUser", () => {
+  it("should have a deleteUser function", () => {
+    expect(typeof userController.deleteUser).toBe("function");
+  });
+
+  it("should call UserService.deleteUser()", async () => {
+    req.params.id = "6036907cec0ac70918837819";
+    await userController.deleteUser(req, res, next);
+
+    expect(UserService.deleteUser).toBeCalledWith({
+      _id: "6036907cec0ac70918837819",
+    });
+  });
+
+  it("should return response with status 200 and user object", async () => {
+    UserService.deleteUser.mockReturnValue({
+      response: { message: "User successfully removed." },
+      error: null,
+    });
+
+    await userController.deleteUser(req, res, next);
+
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual({
+      message: "User successfully removed.",
+    });
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "id property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserService.deleteUser.mockReturnValue(rejectedPromise);
+
+    await userController.deleteUser(req, res, next);
 
     expect(next).toBeCalledWith(errorMessage);
   });
