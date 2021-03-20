@@ -60,7 +60,7 @@ describe(endpointUrl, () => {
     expect(response.body.email).toBe(users[3].email);
   });
 
-  it(`should return 500 on malformed data with POST ${endpointUrl}`, async () => {
+  it(`ERROR - POST ${endpointUrl} - should return 500 on malformed data`, async () => {
     const response = await request(app).post(endpointUrl).send({
       displayName: "Missing password property",
       email: "liam@example.com",
@@ -192,5 +192,26 @@ describe(updateProfileEndPointUrl, () => {
     expect(response.statusCode).toBe(200);
     expect(response.body._id).toBe(newUser.body._id);
     expect(response.body.displayName).toBe(newUser.body.displayName);
+  });
+
+  test(`PUT ${updateProfileEndPointUrl}`, async () => {
+    const newUser = await request(app).post(endpointUrl).send(users[2]);
+
+    expect(newUser.body.displayName).toStrictEqual(users[2].displayName);
+
+    const response = await request(app)
+      .put(updateProfileEndPointUrl)
+      .set("Authorization", "Bearer " + newUser.body.token)
+      .send({
+        displayName: "Jessica Yo",
+      });
+
+    const updatedUser = await request(app)
+      .get(updateProfileEndPointUrl)
+      .set("Authorization", "Bearer " + newUser.body.token);
+
+    expect(response.statusCode).toBe(200);
+    expect(updatedUser.body._id).toStrictEqual(newUser.body._id);
+    expect(updatedUser.body.displayName).toStrictEqual("Jessica Yo");
   });
 });
