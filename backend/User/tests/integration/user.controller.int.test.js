@@ -13,6 +13,66 @@ const idEndPointUrl = `${endpointUrl}:id`;
 
 let adminUser;
 
+describe(endpointUrl, () => {
+  beforeAll(async () => {
+    adminUser = await request(app).post(endpointUrl).send(users[0]);
+
+    await request(app)
+      .put(updateProfileEndPointUrl)
+      .set("Authorization", "Bearer " + adminUser.body.token)
+      .send({ isAdmin: true });
+  });
+  afterAll(async () => {
+    await UserModel.collection
+      .drop()
+      .then(() => {
+        console.log("Successfully dropped User table.");
+      })
+      .catch((error) => {
+        let message;
+        if (error.message == "ns not found")
+          message = "User collection does not exist, so it cannot be dropped.";
+        else message = error.message;
+
+        console.log(`Error dropping User collection - ${message}`);
+      });
+  });
+
+  test(`GET ${endpointUrl}`, async () => {
+    const newUser = await request(app).post(endpointUrl).send(users[1]);
+
+    // Send request to protected/admin endpoint using adminUser JWT Token
+    const response = await request(app)
+      .get(endpointUrl)
+      .set("Authorization", "Bearer " + adminUser.body.token);
+
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.body)).toBeTruthy();
+    expect(response.body.length).toBe(2);
+    expect(response.body[1].displayName).toBe(newUser.body.displayName);
+  });
+
+  test(`POST ${endpointUrl}`, async () => {
+    const response = await request(app).post(endpointUrl).send(users[3]);
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body.displayName).toBe(users[3].displayName);
+    expect(response.body.email).toBe(users[3].email);
+  });
+
+  it(`should return 500 on malformed data with POST ${endpointUrl}`, async () => {
+    const response = await request(app).post(endpointUrl).send({
+      displayName: "Missing password property",
+      email: "liam@example.com",
+    });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toStrictEqual(
+      "UserRepo - Error while creating new database entry: User validation failed: password: Path `password` is required."
+    );
+  });
+});
+
 describe(updateProfileEndPointUrl, () => {});
 describe(idEndPointUrl, () => {
   beforeAll(async () => {
@@ -87,7 +147,7 @@ describe(idEndPointUrl, () => {
     expect(updatedUser.body.displayName).toStrictEqual("Jessica Yo");
   });
 
-  it(`GET ${idEndPointUrl} - should return 404 when non-existent user ID given`, async () => {
+  it(`ERROR - GET ${idEndPointUrl} - should return 404 when non-existent user ID given`, async () => {
     // Send request to protected/admin endpoint using adminUser JWT Token
     const response = await request(app)
       .get(endpointUrl + "6036907cec0ac70918837817")
@@ -98,7 +158,7 @@ describe(idEndPointUrl, () => {
   });
 });
 
-describe(endpointUrl, () => {
+describe(updateProfileEndPointUrl, () => {
   beforeAll(async () => {
     adminUser = await request(app).post(endpointUrl).send(users[0]);
 
@@ -122,38 +182,15 @@ describe(endpointUrl, () => {
         console.log(`Error dropping User collection - ${message}`);
       });
   });
-
-  test(`GET ${endpointUrl}`, async () => {
+  test(`GET ${updateProfileEndPointUrl}`, async () => {
     const newUser = await request(app).post(endpointUrl).send(users[1]);
 
-    // Send request to protected/admin endpoint using adminUser JWT Token
     const response = await request(app)
-      .get(endpointUrl)
-      .set("Authorization", "Bearer " + adminUser.body.token);
+      .get(updateProfileEndPointUrl)
+      .set("Authorization", "Bearer " + newUser.body.token);
 
     expect(response.statusCode).toBe(200);
-    expect(Array.isArray(response.body)).toBeTruthy();
-    expect(response.body.length).toBe(2);
-    expect(response.body[1].displayName).toBe(newUser.body.displayName);
-  });
-
-  test(`POST ${endpointUrl}`, async () => {
-    const response = await request(app).post(endpointUrl).send(users[3]);
-
-    expect(response.statusCode).toBe(201);
-    expect(response.body.displayName).toBe(users[3].displayName);
-    expect(response.body.email).toBe(users[3].email);
-  });
-
-  it(`should return 500 on malformed data with POST ${endpointUrl}`, async () => {
-    const response = await request(app).post(endpointUrl).send({
-      displayName: "Missing password property",
-      email: "liam@example.com",
-    });
-
-    expect(response.statusCode).toBe(500);
-    expect(response.body.message).toStrictEqual(
-      "UserRepo - Error while creating new database entry: User validation failed: password: Path `password` is required."
-    );
+    expect(response.body._id).toBe(newUser.body._id);
+    expect(response.body.displayName).toBe(newUser.body.displayName);
   });
 });

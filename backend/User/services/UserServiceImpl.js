@@ -39,7 +39,7 @@ const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
   }
 };
 
-const getLoggedInUserProfile = () => (user) => {
+const getLoggedInUserProfile = (user) => {
   if (user) {
     return successResponse(
       new User({
@@ -169,7 +169,7 @@ const UserService = (UserRepo) => {
      * @param {User} User supplied from req.user
      * @returns {User} User
      */
-    getLoggedInUserProfile: getLoggedInUserProfile(),
+    getLoggedInUserProfile: getLoggedInUserProfile,
     /**
      * @function registerUser
      * @description Register a new User

@@ -107,9 +107,7 @@ describe("UserController.getUserProfile", () => {
 
   it("should call UserService.getLoggedInUserProfile()", async () => {
     await userController.getUserProfile(req, res, next);
-    expect(UserService.getLoggedInUserProfile).toHaveBeenCalledWith({
-      user: req.user,
-    });
+    expect(UserService.getLoggedInUserProfile).toHaveBeenCalledWith(req.user);
   });
 
   it("should return response with status 200 and all the users", async () => {

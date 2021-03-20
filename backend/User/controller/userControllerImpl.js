@@ -28,9 +28,9 @@ const getUserProfile = (UserService) =>
   asyncHandler(async (req, res, next) => {
     try {
       const user = req.user;
-      const { response, error } = await UserService.getLoggedInUserProfile({
-        user,
-      });
+      const { response, error } = await UserService.getLoggedInUserProfile(
+        user
+      );
 
       responseHandler(res, response, error);
     } catch (error) {
