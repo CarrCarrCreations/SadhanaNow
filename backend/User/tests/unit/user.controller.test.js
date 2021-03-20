@@ -10,11 +10,16 @@ let req, res, next, user;
 UserService.registerUser = jest.fn();
 UserService.getAllUsers = jest.fn();
 UserService.getUserById = jest.fn();
+UserService.updateUser = jest.fn();
 
 const userController = UserController(UserService);
 
 beforeEach(() => {
   req = httpMocks.createRequest();
+  req.user = {
+    _id: "6036907cec0ac70918837819",
+  };
+
   res = httpMocks.createResponse();
   next = jest.fn();
 });
@@ -142,6 +147,93 @@ describe("UserController.registerUser", () => {
     UserService.registerUser.mockReturnValue(rejectedPromise);
 
     await userController.registerUser(req, res, next);
+
+    expect(next).toBeCalledWith(errorMessage);
+  });
+});
+
+describe("UserController.updateUser", () => {
+  it("should have a updateUser", () => {
+    expect(typeof userController.updateUser).toBe("function");
+  });
+
+  it("should call UserService.updateUser()", async () => {
+    req.params.id = "6036907cec0ac70918837819";
+    req.body.displayName = "Liam";
+
+    await userController.updateUser(req, res, next);
+
+    expect(UserService.updateUser).toBeCalledWith({
+      _id: "6036907cec0ac70918837819",
+      changedEntry: {
+        displayName: "Liam",
+      },
+    });
+  });
+
+  it("should return response with status 200 and user object", async () => {
+    UserService.updateUser.mockReturnValue({
+      response: users[0],
+      error: null,
+    });
+
+    await userController.updateUser(req, res, next);
+
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(users[0]);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "id property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserService.updateUser.mockReturnValue(rejectedPromise);
+
+    await userController.updateUser(req, res, next);
+
+    expect(next).toBeCalledWith(errorMessage);
+  });
+});
+
+describe("UserController.updateUserProfile", () => {
+  it("should have a updateUserProfile", () => {
+    expect(typeof userController.updateUserProfile).toBe("function");
+  });
+
+  it("should call UserService.updateUserProfile()", async () => {
+    req.body.displayName = "Liam";
+
+    await userController.updateUserProfile(req, res, next);
+
+    expect(UserService.updateUser).toBeCalledWith({
+      _id: req.user._id,
+      changedEntry: {
+        displayName: "Liam",
+      },
+    });
+  });
+
+  it("should return response with status 200 and user object", async () => {
+    UserService.updateUser.mockReturnValue({
+      response: users[0],
+      error: null,
+    });
+
+    await userController.updateUserProfile(req, res, next);
+
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(users[0]);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "id property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserService.updateUser.mockReturnValue(rejectedPromise);
+
+    await userController.updateUser(req, res, next);
 
     expect(next).toBeCalledWith(errorMessage);
   });
