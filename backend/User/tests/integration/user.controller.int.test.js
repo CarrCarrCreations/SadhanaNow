@@ -65,6 +65,28 @@ describe(idEndPointUrl, () => {
     });
   });
 
+  test(`PUT ${idEndPointUrl}`, async () => {
+    const newUser = await request(app).post(endpointUrl).send(users[3]);
+
+    expect(newUser.body.displayName).toStrictEqual(users[3].displayName);
+
+    // Send request to protected/admin endpoint using adminUser JWT Token
+    const response = await request(app)
+      .put(endpointUrl + newUser.body._id)
+      .set("Authorization", "Bearer " + adminUser.body.token)
+      .send({
+        displayName: "Jessica Yo",
+      });
+
+    const updatedUser = await request(app)
+      .get(endpointUrl + newUser.body._id)
+      .set("Authorization", "Bearer " + adminUser.body.token);
+
+    expect(response.statusCode).toBe(200);
+    expect(updatedUser.body._id).toStrictEqual(newUser.body._id);
+    expect(updatedUser.body.displayName).toStrictEqual("Jessica Yo");
+  });
+
   it(`GET ${idEndPointUrl} - should return 404 when non-existent user ID given`, async () => {
     // Send request to protected/admin endpoint using adminUser JWT Token
     const response = await request(app)
