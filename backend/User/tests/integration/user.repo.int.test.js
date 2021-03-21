@@ -78,3 +78,28 @@ describe("UserRepo.findMany", () => {
     }
   });
 });
+
+describe("UserRepo.findOne", () => {
+  it("should have a findOne function", () => {
+    expect(typeof userRepo.findOne).toBe("function");
+  });
+
+  it("should return a user object", async () => {
+    const newUser = await userRepo.create(users[1]);
+
+    const response = await userRepo.findOne({ email: newUser.email });
+
+    expect(response.displayName).toStrictEqual(newUser.displayName);
+    expect(response.email).toStrictEqual(newUser.email);
+  });
+
+  it("should handle thrown errors", async () => {
+    expect.assertions(1);
+    try {
+      await userRepo.findOne();
+      throw new Error("Internal Server Error");
+    } catch (error) {
+      expect(error.message).toMatch("Internal Server Error");
+    }
+  });
+});
