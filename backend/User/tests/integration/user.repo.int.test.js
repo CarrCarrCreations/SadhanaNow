@@ -103,3 +103,27 @@ describe("UserRepo.findOne", () => {
     }
   });
 });
+
+describe("UserRepo.remove", () => {
+  it("should have a remove function", () => {
+    expect(typeof userRepo.remove).toBe("function");
+  });
+
+  it("should return a user object", async () => {
+    const newUser = await userRepo.create(users[1]);
+
+    const response = await userRepo.remove({ _id: newUser._id });
+
+    expect(response).toStrictEqual({ n: 1, ok: 1, deletedCount: 1 });
+  });
+
+  it("should handle thrown errors", async () => {
+    expect.assertions(1);
+    try {
+      await userRepo.remove({ _id: "604babb1d2455814bbc9395e" });
+      throw new Error("Internal Server Error");
+    } catch (error) {
+      expect(error.message).toMatch("Internal Server Error");
+    }
+  });
+});
