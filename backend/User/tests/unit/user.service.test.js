@@ -208,3 +208,5 @@ describe("UserService.updateUser", () => {
     }
   });
 });
+
+describe("UserService.registerUser", () => {});

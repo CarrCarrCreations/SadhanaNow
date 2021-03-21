@@ -41,6 +41,7 @@
     "babel-jest": "^26.6.3",
     "concurrently": "^5.3.0",
     "jest": "^26.6.3",
+    "mongodb-memory-server": "^6.9.6",
     "node-mocks-http": "^1.10.1",
     "nodemon": "^2.0.7",
     "supertest": "^6.1.3"

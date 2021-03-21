@@ -3,15 +3,17 @@ import request from "supertest";
 import app from "../../../app.js";
 import users from "../mock-data/users.js";
 import UserModel from "../../repo/models/userModel";
-import connectDB from "../../../config/db.js";
-
-connectDB(process.env.MONGO_TEST_URI);
+import { connect, closeDatabase } from "../db-handler/db-handler.js";
 
 const endpointUrl = "/api/users/";
 const updateProfileEndPointUrl = `${endpointUrl}profile`;
 const idEndPointUrl = `${endpointUrl}:id`;
 
 let adminUser;
+
+// Connect to in-memory MongoDB database
+beforeAll(async () => await connect());
+afterAll(async () => await closeDatabase());
 
 describe(endpointUrl, () => {
   beforeAll(async () => {
