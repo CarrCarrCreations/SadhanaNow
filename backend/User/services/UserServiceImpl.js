@@ -59,7 +59,7 @@ const updateUser = (UserRepo) => async ({ _id, changedEntry }) => {
     await UserRepo.update({ _id, changedEntry });
     const updatedUser = await UserRepo.findOne({ _id });
 
-    if (updateUser) {
+    if (updatedUser) {
       return successResponse(
         new User({
           _id: updatedUser._id,

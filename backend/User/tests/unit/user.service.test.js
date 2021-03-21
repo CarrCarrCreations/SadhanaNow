@@ -1,13 +1,14 @@
-import httpMocks from "node-mocks-http";
 import dotenv from "dotenv";
 
 import UserService from "../../services/UserServiceImpl.js";
 import UserRepo from "../../repo/UserRepo";
 import users from "../mock-data/users.js";
+import registeredUser from "../mock-data/registeredUsers.js";
 
 dotenv.config();
 
 UserRepo.findOne = jest.fn();
+UserRepo.update = jest.fn();
 
 const userService = UserService(UserRepo);
 
@@ -110,5 +111,100 @@ describe("UserService.getLoggedInUserProfile", () => {
 
     expect(response).toBe(null);
     expect(error.message).toBe("UserService: User not found");
+  });
+});
+
+describe("UserService.updateUser", () => {
+  it("should have an authUserEmailAndPassword function", () => {
+    expect(typeof userService.updateUser).toBe("function");
+  });
+
+  it("should call UserRepo.update()", async () => {
+    const _id = "604babb1d2455814bbc9392e";
+    const changedEntry = {
+      displayName: "new Name!",
+    };
+
+    UserRepo.update.mockReturnValue(true);
+    registeredUser.displayName = "new Name!";
+    UserRepo.findOne.mockReturnValue(registeredUser);
+
+    const request = { _id, changedEntry };
+    const { response, error } = await userService.updateUser(request);
+
+    expect(error).toBe(null);
+    expect(UserRepo.update).toHaveBeenCalledWith(request);
+  });
+
+  it("should call UserRepo.findOne()", async () => {
+    const _id = "604babb1d2455814bbc9392e";
+    const changedEntry = {
+      displayName: "new Name!",
+    };
+
+    UserRepo.update.mockReturnValue(true);
+    registeredUser.displayName = "new Name!";
+    UserRepo.findOne.mockReturnValue(registeredUser);
+
+    const request = { _id, changedEntry };
+    const { response, error } = await userService.updateUser(request);
+
+    expect(error).toBe(null);
+    expect(UserRepo.findOne).toHaveBeenCalledWith({ _id });
+  });
+
+  it("should return response with updated user object payload", async () => {
+    const _id = "604babb1d2455814bbc9392e";
+    const changedEntry = {
+      displayName: "new Name!",
+    };
+
+    UserRepo.update.mockReturnValue(true);
+    registeredUser.displayName = "new Name!";
+    UserRepo.findOne.mockReturnValue(registeredUser);
+
+    const request = { _id, changedEntry };
+    const { response, error } = await userService.updateUser(request);
+
+    expect(error).toBe(null);
+    expect(response._id).toBe(registeredUser._id);
+    expect(response.displayName).toBe("new Name!");
+  });
+
+  it("should return error response when findOne() => null", async () => {
+    const _id = "604babb1d2455814bbc9392e";
+    const changedEntry = {
+      displayName: "new Name!",
+    };
+    const request = { _id, changedEntry };
+
+    UserRepo.update.mockReturnValue(true);
+    UserRepo.findOne.mockReturnValue(null);
+
+    const { response, error } = await userService.updateUser(request);
+
+    expect(response).toBe(null);
+    expect(error.message).toBe("UserService: User not found");
+    expect(error.statusCode).toBe(404);
+  });
+
+  it("should handle thrown errors", async () => {
+    const errorMessage = { message: "UserService: Internal Server Error" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    const _id = "604babb1d2455814bbc9392e";
+    const changedEntry = {
+      displayName: "new Name!",
+    };
+    const request = { _id, changedEntry };
+
+    UserRepo.update.mockReturnValue(rejectedPromise);
+
+    expect.assertions(1);
+    try {
+      await userService.updateUser(request);
+    } catch (error) {
+      expect(error.message).toMatch("UserService: Internal Server Error");
+    }
   });
 });
