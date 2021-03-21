@@ -11,6 +11,7 @@ UserRepo.findOne = jest.fn();
 UserRepo.findMany = jest.fn();
 UserRepo.update = jest.fn();
 UserRepo.create = jest.fn();
+UserRepo.remove = jest.fn();
 
 const userService = UserService(UserRepo);
 
@@ -375,6 +376,72 @@ describe("UserService.getAllUsers", () => {
     expect.assertions(1);
     try {
       await userService.getAllUsers();
+    } catch (error) {
+      expect(error.message).toMatch("Internal Server Error");
+    }
+  });
+});
+
+describe("UserService.deleteUser", () => {
+  it("should have an deleteUser function", () => {
+    expect(typeof userService.deleteUser).toBe("function");
+  });
+
+  it("should call UserRepo.findOne() and UserRepo.remove()", async () => {
+    const regUser = registeredUsers[1];
+
+    UserRepo.findOne.mockReturnValue(regUser);
+    UserRepo.remove.mockReturnValue(true);
+
+    const { response, error } = await userService.deleteUser({
+      _id: regUser._id,
+    });
+
+    expect(error).toBe(null);
+    expect(UserRepo.findOne).toHaveBeenCalledWith({ _id: regUser._id });
+    expect(UserRepo.remove).toBeCalled();
+  });
+
+  it("should return success response object", async () => {
+    const regUser = registeredUsers[1];
+
+    UserRepo.findOne.mockReturnValue(regUser);
+    UserRepo.remove.mockReturnValue(true);
+
+    const { response, error } = await userService.deleteUser({
+      _id: regUser._id,
+    });
+
+    expect(error).toBe(null);
+    expect(response).toStrictEqual({ message: "User successfully removed." });
+  });
+
+  it("should return error response when UserRepo.findOne() => null", async () => {
+    const regUser = registeredUsers[1];
+
+    UserRepo.findOne.mockReturnValue(false);
+
+    const { response, error } = await userService.deleteUser({
+      _id: regUser._id,
+    });
+
+    expect(response).toBe(null);
+    expect(error.message).toStrictEqual("UserService: User not found.");
+    expect(error.statusCode).toBe(404);
+  });
+
+  it("should handle thrown errors", async () => {
+    const regUser = registeredUsers[1];
+    const errorMessage = { message: "Internal Server Error" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserRepo.findOne.mockReturnValue(rejectedPromise);
+
+    expect.assertions(1);
+    try {
+      await userService.deleteUser({
+        _id: regUser._id,
+      });
     } catch (error) {
       expect(error.message).toMatch("Internal Server Error");
     }
