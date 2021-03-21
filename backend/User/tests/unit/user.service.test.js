@@ -269,7 +269,7 @@ describe("UserService.registerUser", () => {
     expect(error.message).toBe("UserService: User already exists.");
     expect(error.statusCode).toBe(400);
   });
-  it("should handle errors", async () => {
+  it("should handle thrown errors", async () => {
     const errorMessage = { message: "Internal Server Error" };
     const rejectedPromise = Promise.reject(errorMessage);
 
@@ -285,6 +285,65 @@ describe("UserService.registerUser", () => {
     expect.assertions(1);
     try {
       await userService.registerUser(userInfo);
+    } catch (error) {
+      expect(error.message).toMatch("Internal Server Error");
+    }
+  });
+});
+
+describe("UserService.getUserById", () => {
+  it("should have an getUserById function", () => {
+    expect(typeof userService.getUserById).toBe("function");
+  });
+
+  it("should call UserRepo.findOne()", async () => {
+    const _id = "604babb1d2455814bbc9392e";
+    const regUser = registeredUsers[1];
+
+    UserRepo.findOne.mockReturnValue(regUser);
+
+    const { response, error } = await userService.getUserById(_id);
+
+    expect(error).toBe(null);
+    expect(UserRepo.findOne).toHaveBeenCalledWith({ _id });
+  });
+
+  it("should return user object", async () => {
+    const regUser = registeredUsers[1];
+
+    UserRepo.findOne.mockReturnValue(regUser);
+
+    const { response, error } = await userService.getUserById(regUser._id);
+
+    expect(error).toBe(null);
+    expect(response._id).toBe(regUser._id);
+    expect(response.displayName).toBe(regUser.displayName);
+    expect(response.email).toBe(regUser.email);
+    expect(response.isAdmin).toBe(regUser.isAdmin);
+  });
+
+  it("should return error response when UserRepo.findOne() => null", async () => {
+    const _id = "604babb1d2455814bbc9392e";
+
+    UserRepo.findOne.mockReturnValue(null);
+
+    const { response, error } = await userService.getUserById(_id);
+
+    expect(response).toBe(null);
+    expect(error.message).toBe("UserService: User not found.");
+    expect(error.statusCode).toBe(404);
+  });
+
+  it("should handle thrown errors", async () => {
+    const errorMessage = { message: "Internal Server Error" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    const _id = "604babb1d2455814bbc9392e";
+
+    UserRepo.findOne.mockReturnValue(rejectedPromise);
+
+    expect.assertions(1);
+    try {
+      await userService.getUserById({ _id });
     } catch (error) {
       expect(error.message).toMatch("Internal Server Error");
     }
