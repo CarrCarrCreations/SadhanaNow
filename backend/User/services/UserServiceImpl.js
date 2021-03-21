@@ -1,33 +1,56 @@
 import generateToken from "../../utils/generateToken.js";
 import User from "../repo/models/User.js";
-import { Error } from "../../middleware/errorMiddleware.js";
+
+const successResponse = (payload) => {
+  return {
+    response: payload,
+    error: null,
+  };
+};
+const errorResponse = (statusCode, message) => {
+  return {
+    response: null,
+    error: {
+      statusCode,
+      message,
+    },
+  };
+};
 
 const authUserEmailAndPassword = (UserRepo) => async ({ email, password }) => {
-  const user = await UserRepo.findOne({ email });
+  try {
+    const user = await UserRepo.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
-    return new User({
-      _id: user._id,
-      displayName: user.displayName,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      token: generateToken(user._id),
-    });
-  } else {
-    throw Error("UserService: Invalid email or password", 400);
+    if (user && (await user.matchPassword(password))) {
+      return successResponse(
+        new User({
+          _id: user._id,
+          displayName: user.displayName,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          token: generateToken(user._id),
+        })
+      );
+    } else {
+      return errorResponse(400, "UserService: Invalid email or password");
+    }
+  } catch (error) {
+    throw new Error(error.message);
   }
 };
 
-const getLoggedInUserProfile = () => (user) => {
+const getLoggedInUserProfile = (user) => {
   if (user) {
-    return new User({
-      _id: user._id,
-      displayName: user.displayName,
-      email: user.email,
-      isAdmin: user.isAdmin,
-    });
+    return successResponse(
+      new User({
+        _id: user._id,
+        displayName: user.displayName,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      })
+    );
   } else {
-    throw Error("User not found", 400);
+    return errorResponse(400, "UserService: User not found");
   }
 };
 
@@ -36,64 +59,91 @@ const updateUser = (UserRepo) => async ({ _id, changedEntry }) => {
     await UserRepo.update({ _id, changedEntry });
     const updatedUser = await UserRepo.findOne({ _id });
 
-    return new User({
-      _id: updatedUser._id,
-      displayName: updatedUser.displayName,
-      email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
-    });
+    if (updatedUser) {
+      return successResponse(
+        new User({
+          _id: updatedUser._id,
+          displayName: updatedUser.displayName,
+          email: updatedUser.email,
+          isAdmin: updatedUser.isAdmin,
+        })
+      );
+    } else {
+      return errorResponse(404, "UserService: User not found");
+    }
   } catch (error) {
-    throw Error("UserService: User not found", 404);
+    throw new Error(error.message);
   }
 };
 
 const registerUser = (UserRepo) => async ({ displayName, email, password }) => {
-  const userExists = await UserRepo.findOne({ email });
-  if (userExists) {
-    throw Error("User already exists.", 400);
-  }
+  try {
+    const userExists = await UserRepo.findOne({ email });
+    if (userExists) {
+      return errorResponse(400, "UserService: User already exists.");
+    }
 
-  const user = await UserRepo.create({
-    displayName,
-    email,
-    password,
-  });
-
-  if (user) {
-    return new User({
-      _id: user._id,
-      displayName: user.displayName,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      token: generateToken(user._id),
+    const user = await UserRepo.create({
+      displayName,
+      email,
+      password,
     });
-  } else {
-    throw Error("Invalid user data.", 400);
+
+    return successResponse(
+      new User({
+        _id: user._id,
+        displayName: user.displayName,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: generateToken(user._id),
+      })
+    );
+  } catch (error) {
+    throw new Error(error.message);
   }
 };
 
 const getUserById = (UserRepo) => async ({ _id }) => {
-  const user = await UserRepo.findOne({ _id });
+  try {
+    const user = await UserRepo.findOne({ _id });
 
-  if (user) {
-    return user;
-  } else {
-    throw Error("User not found", 404);
+    if (user) {
+      return successResponse(
+        new User({
+          _id: user._id,
+          displayName: user.displayName,
+          email: user.email,
+          isAdmin: user.isAdmin,
+        })
+      );
+    } else {
+      return errorResponse(404, "UserService: User not found.");
+    }
+  } catch (error) {
+    throw new Error(error.message);
   }
 };
 
 const getAllUsers = (UserRepo) => async () => {
-  return await UserRepo.findMany();
+  try {
+    return successResponse(await UserRepo.findMany());
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const deleteUser = (UserRepo) => async ({ _id }) => {
-  const user = await UserRepo.findOne({ _id });
+  try {
+    const user = await UserRepo.findOne({ _id });
 
-  if (user) {
-    await UserRepo.remove({ _id });
-    return { message: "User removed" };
-  } else {
-    throw Error("User not found", 404);
+    if (user) {
+      await UserRepo.remove({ _id });
+      return successResponse({ message: "User successfully removed." });
+    } else {
+      return errorResponse(404, "UserService: User not found.");
+    }
+  } catch (error) {
+    throw new Error(error.message);
   }
 };
 
@@ -119,7 +169,7 @@ const UserService = (UserRepo) => {
      * @param {User} User supplied from req.user
      * @returns {User} User
      */
-    getLoggedInUserProfile: getLoggedInUserProfile(),
+    getLoggedInUserProfile: getLoggedInUserProfile,
     /**
      * @function registerUser
      * @description Register a new User

@@ -1,15 +1,24 @@
 import asyncHandler from "express-async-handler";
 
+const responseHandler = (res, response, error) => {
+  if (error) {
+    res.status(error.statusCode);
+    throw new Error(error.message);
+  } else {
+    return res.json(response);
+  }
+};
+
 const authUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const { email, password } = req.body;
-
     try {
-      const user = await UserService.authUserEmailAndPassword({
+      const { email, password } = req.body;
+      const { response, error } = await UserService.authUserEmailAndPassword({
         email,
         password,
       });
-      res.json(user);
+
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
@@ -17,10 +26,13 @@ const authUser = (UserService) =>
 
 const getUserProfile = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const user = req.user;
-
     try {
-      res.json(await UserService.getLoggedInUserProfile({ user }));
+      const user = req.user;
+      const { response, error } = await UserService.getLoggedInUserProfile(
+        user
+      );
+
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
@@ -28,16 +40,16 @@ const getUserProfile = (UserService) =>
 
 const updateUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const _id = req.params.id;
-    const { displayName, email, isAdmin } = req.body;
-
     try {
-      res.json(
-        await UserService.updateUser({
-          _id,
-          changedEntry: { displayName, email, isAdmin },
-        })
-      );
+      const _id = req.params.id;
+      const { displayName, email, isAdmin } = req.body;
+
+      const { response, error } = await UserService.updateUser({
+        _id,
+        changedEntry: { displayName, email, isAdmin },
+      });
+
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
@@ -45,16 +57,16 @@ const updateUser = (UserService) =>
 
 const updateUserProfile = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const _id = req.user._id;
-    const { displayName, email, password } = req.body;
-
     try {
-      res.json(
-        await UserService.updateUser({
-          _id,
-          changedEntry: { displayName, email, password },
-        })
-      );
+      const _id = req.user._id;
+      const { displayName, email, password, isAdmin } = req.body;
+
+      const { response, error } = await UserService.updateUser({
+        _id,
+        changedEntry: { displayName, email, isAdmin },
+      });
+
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
@@ -62,12 +74,17 @@ const updateUserProfile = (UserService) =>
 
 const registerUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const { displayName, email, password } = req.body;
-
     try {
-      res
-        .status(201)
-        .json(await UserService.registerUser({ displayName, email, password }));
+      const { displayName, email, password } = req.body;
+
+      const { response, error } = await UserService.registerUser({
+        displayName,
+        email,
+        password,
+      });
+
+      res.status(201);
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
@@ -76,7 +93,10 @@ const registerUser = (UserService) =>
 const getUsers = (UserService) =>
   asyncHandler(async (req, res, next) => {
     try {
-      res.json(await UserService.getAllUsers());
+      const { response, error } = await UserService.getAllUsers();
+
+      res.status(200);
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
@@ -84,10 +104,11 @@ const getUsers = (UserService) =>
 
 const deleteUser = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const _id = req.params.id;
-
     try {
-      res.json(await UserService.deleteUser({ _id }));
+      const _id = req.params.id;
+      const { response, error } = await UserService.deleteUser({ _id });
+
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
@@ -95,17 +116,18 @@ const deleteUser = (UserService) =>
 
 const getUserById = (UserService) =>
   asyncHandler(async (req, res, next) => {
-    const _id = req.params.id;
-
     try {
-      res.json(await UserService.getUserById({ _id }));
+      const _id = req.params.id;
+
+      const { response, error } = await UserService.getUserById({ _id });
+
+      responseHandler(res, response, error);
     } catch (error) {
       next(error);
     }
   });
 
 /**
- *
  *  Object containing all helper methods for User objects
  * @module UserController
  * @param {Object} UserService - Object containing all helper functions for the User objects
