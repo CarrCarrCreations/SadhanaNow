@@ -10,7 +10,7 @@ module.exports.connect = async () => {
   const uri = await mongodb.getUri();
 
   const mongooseOpts = {
-    useUnifiedTopology: true,
+    // useUnifiedTopology: true,
     useNewUrlParser: true,
     autoReconnect: true,
     reconnectTries: Number.MAX_VALUE,

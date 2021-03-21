@@ -36,7 +36,7 @@ const findOne = (Collection) => async (query = {}) => {
 
 const remove = (Collection) => async ({ _id }) => {
   try {
-    return await Collection.remove({ _id });
+    return await Collection.deleteOne({ _id });
   } catch (error) {
     throw new Error("UserRepo: Error while deleting entry from database");
   }
@@ -46,7 +46,7 @@ const update = (Collection) => async ({ _id, changedEntry }) => {
   try {
     let updatedChangedEntry = removeEmptyProperties(changedEntry);
 
-    return await Collection.update({ _id }, { $set: updatedChangedEntry });
+    return await Collection.updateOne({ _id }, { $set: updatedChangedEntry });
   } catch (error) {
     throw new Error("UserRepo: " + error.message);
   }
