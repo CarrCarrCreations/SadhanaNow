@@ -8,6 +8,7 @@ import registeredUsers from "../mock-data/registeredUsers.js";
 dotenv.config();
 
 UserRepo.findOne = jest.fn();
+UserRepo.findMany = jest.fn();
 UserRepo.update = jest.fn();
 UserRepo.create = jest.fn();
 
@@ -344,6 +345,36 @@ describe("UserService.getUserById", () => {
     expect.assertions(1);
     try {
       await userService.getUserById({ _id });
+    } catch (error) {
+      expect(error.message).toMatch("Internal Server Error");
+    }
+  });
+});
+
+describe("UserService.getAllUsers", () => {
+  it("should have an getAllUsers function", () => {
+    expect(typeof userService.getAllUsers).toBe("function");
+  });
+
+  it("should call UserRepo.findMany()", async () => {
+    UserRepo.findMany.mockReturnValue(registeredUsers);
+
+    const { response, error } = await userService.getAllUsers();
+
+    expect(error).toBe(null);
+    expect(UserRepo.findMany).toBeCalled();
+    expect(response).toStrictEqual(registeredUsers);
+  });
+
+  it("should handle thrown errors", async () => {
+    const errorMessage = { message: "Internal Server Error" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    UserRepo.findMany.mockReturnValue(rejectedPromise);
+
+    expect.assertions(1);
+    try {
+      await userService.getAllUsers();
     } catch (error) {
       expect(error.message).toMatch("Internal Server Error");
     }
