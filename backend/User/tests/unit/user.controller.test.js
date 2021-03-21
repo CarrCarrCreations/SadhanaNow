@@ -15,6 +15,7 @@ UserService.authUserEmailAndPassword = jest.fn();
 UserService.getLoggedInUserProfile = jest.fn();
 UserService.deleteUser = jest.fn();
 
+// jest.mock("../../services/UserService.js")
 const userController = UserController(UserService);
 
 beforeEach(() => {

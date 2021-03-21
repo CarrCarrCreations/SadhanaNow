@@ -3,12 +3,13 @@ import dotenv from "dotenv";
 import UserService from "../../services/UserServiceImpl.js";
 import UserRepo from "../../repo/UserRepo";
 import users from "../mock-data/users.js";
-import registeredUser from "../mock-data/registeredUsers.js";
+import registeredUsers from "../mock-data/registeredUsers.js";
 
 dotenv.config();
 
 UserRepo.findOne = jest.fn();
 UserRepo.update = jest.fn();
+UserRepo.create = jest.fn();
 
 const userService = UserService(UserRepo);
 
@@ -126,8 +127,9 @@ describe("UserService.updateUser", () => {
     };
 
     UserRepo.update.mockReturnValue(true);
-    registeredUser.displayName = "new Name!";
-    UserRepo.findOne.mockReturnValue(registeredUser);
+    const regUser = registeredUsers[0];
+    regUser.displayName = "new Name!";
+    UserRepo.findOne.mockReturnValue(regUser);
 
     const request = { _id, changedEntry };
     const { response, error } = await userService.updateUser(request);
@@ -143,8 +145,9 @@ describe("UserService.updateUser", () => {
     };
 
     UserRepo.update.mockReturnValue(true);
-    registeredUser.displayName = "new Name!";
-    UserRepo.findOne.mockReturnValue(registeredUser);
+    const regUser = registeredUsers[1];
+    regUser.displayName = "new Name!";
+    UserRepo.findOne.mockReturnValue(regUser);
 
     const request = { _id, changedEntry };
     const { response, error } = await userService.updateUser(request);
@@ -160,14 +163,15 @@ describe("UserService.updateUser", () => {
     };
 
     UserRepo.update.mockReturnValue(true);
-    registeredUser.displayName = "new Name!";
-    UserRepo.findOne.mockReturnValue(registeredUser);
+    const regUser = registeredUsers[2];
+    regUser.displayName = "new Name!";
+    UserRepo.findOne.mockReturnValue(regUser);
 
     const request = { _id, changedEntry };
     const { response, error } = await userService.updateUser(request);
 
     expect(error).toBe(null);
-    expect(response._id).toBe(registeredUser._id);
+    expect(response._id).toBe(regUser._id);
     expect(response.displayName).toBe("new Name!");
   });
 
@@ -209,4 +213,80 @@ describe("UserService.updateUser", () => {
   });
 });
 
-describe("UserService.registerUser", () => {});
+describe("UserService.registerUser", () => {
+  it("should have an registerUser function", () => {
+    expect(typeof userService.registerUser).toBe("function");
+  });
+
+  it("should call UserRepo.findOne() and UserRepo.create()", async () => {
+    const userInfo = {
+      displayName: "Liam",
+      email: "admin@example.com",
+      password: 123456,
+    };
+
+    UserRepo.findOne.mockReturnValue(null);
+    UserRepo.create.mockReturnValue(registeredUsers[3]);
+    const { response, error } = await userService.registerUser(userInfo);
+
+    expect(error).toBe(null);
+    expect(UserRepo.findOne).toHaveBeenCalledWith({ email: userInfo.email });
+    expect(UserRepo.create).toHaveBeenCalledWith(userInfo);
+  });
+
+  it("should return response with newly registered user object", async () => {
+    const user = registeredUsers[4];
+
+    const userInfo = {
+      displayName: user.displayName,
+      email: user.email,
+      password: 123456,
+    };
+
+    UserRepo.findOne.mockReturnValue(null);
+    UserRepo.create.mockReturnValue(user);
+
+    const { response, error } = await userService.registerUser(userInfo);
+
+    expect(error).toBe(null);
+    expect(response.displayName).toBe(userInfo.displayName);
+    expect(response.email).toBe(userInfo.email);
+  });
+
+  it("should return error response when findOne() => userModel", async () => {
+    const user = registeredUsers[4];
+    const userInfo = {
+      displayName: user.displayName,
+      email: user.email,
+      password: 123456,
+    };
+
+    UserRepo.findOne.mockReturnValue(user);
+
+    const { response, error } = await userService.registerUser(userInfo);
+
+    expect(response).toBe(null);
+    expect(error.message).toBe("UserService: User already exists.");
+    expect(error.statusCode).toBe(400);
+  });
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Internal Server Error" };
+    const rejectedPromise = Promise.reject(errorMessage);
+
+    const user = registeredUsers[4];
+    const userInfo = {
+      displayName: user.displayName,
+      email: user.email,
+      password: 123456,
+    };
+
+    UserRepo.findOne.mockReturnValue(rejectedPromise);
+
+    expect.assertions(1);
+    try {
+      await userService.registerUser(userInfo);
+    } catch (error) {
+      expect(error.message).toMatch("Internal Server Error");
+    }
+  });
+});
