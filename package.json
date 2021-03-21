@@ -33,7 +33,8 @@
     "express-async-handler": "^1.1.4",
     "jsdoc": "^3.6.6",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.11.17"
+    "mongodb": "^3.6.5",
+    "mongoose": "^5.12.1"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
