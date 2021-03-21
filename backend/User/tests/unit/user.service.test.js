@@ -42,13 +42,14 @@ describe("UserService.authUserEmailAndPassword", () => {
     user.matchPassword = (password) => true;
     UserRepo.findOne.mockReturnValue(user);
 
-    const authUser = await userService.authUserEmailAndPassword({
+    const { response, error } = await userService.authUserEmailAndPassword({
       email,
       password,
     });
 
-    expect(authUser.response.email).toBe(email);
-    expect(authUser.response.token).toBeTruthy();
+    expect(response.email).toBe(email);
+    expect(error).toBe(null);
+    expect(response.token).toBeTruthy();
   });
 
   it("should return error response when findOne() => null", async () => {
@@ -57,15 +58,14 @@ describe("UserService.authUserEmailAndPassword", () => {
 
     UserRepo.findOne.mockReturnValue(null);
 
-    const authUser = await userService.authUserEmailAndPassword({
+    const { response, error } = await userService.authUserEmailAndPassword({
       email,
       password,
     });
 
-    expect(authUser.error.message).toBe(
-      "UserService: Invalid email or password"
-    );
-    expect(authUser.error.statusCode).toBe(400);
+    expect(response).toBe(null);
+    expect(error.message).toBe("UserService: Invalid email or password");
+    expect(error.statusCode).toBe(400);
   });
 
   it("should handle thrown errors", async () => {
@@ -85,5 +85,30 @@ describe("UserService.authUserEmailAndPassword", () => {
     } catch (error) {
       expect(error.message).toMatch("UserService: Invalid email or password");
     }
+  });
+});
+
+describe("UserService.getLoggedInUserProfile", () => {
+  it("should have an getLoggedInUserProfile function", () => {
+    expect(typeof userService.getLoggedInUserProfile).toBe("function");
+  });
+
+  it("should return a new user object", () => {
+    const user = users[0];
+    const { response, error } = userService.getLoggedInUserProfile(user);
+
+    expect(error).toBe(null);
+    expect(response._id).toBe(user._id);
+    expect(response.displayName).toBe(user.displayName);
+    expect(response.email).toBe(user.email);
+    expect(response.isAdmin).toBe(user.isAdmin);
+  });
+
+  it("should return error response if no user is found", () => {
+    const user = null;
+    const { response, error } = userService.getLoggedInUserProfile(user);
+
+    expect(response).toBe(null);
+    expect(error.message).toBe("UserService: User not found");
   });
 });

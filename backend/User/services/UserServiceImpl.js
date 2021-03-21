@@ -50,7 +50,7 @@ const getLoggedInUserProfile = (user) => {
       })
     );
   } else {
-    return errorResponse(400, "User not found");
+    return errorResponse(400, "UserService: User not found");
   }
 };
 
