@@ -7,7 +7,7 @@ const mongodb = new MongoMemoryServer();
  * Connect to the in-memory database.
  */
 module.exports.connect = async () => {
-  const uri = await mongodb.getConnectionString();
+  const uri = await mongodb.getUri();
 
   const mongooseOpts = {
     useUnifiedTopology: true,
