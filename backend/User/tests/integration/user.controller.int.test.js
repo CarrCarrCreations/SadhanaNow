@@ -1,9 +1,9 @@
 import request from "supertest";
 
 import app from "../../../app.js";
-import users from "../mock-data/users.js";
+import users from "../mongodb/mock-data/users.js";
 import UserModel from "../../repo/models/userModel";
-import { connect, closeDatabase } from "../db-handler/db-handler.js";
+import { connect, closeDatabase } from "../mongodb/db-handler.js";
 
 const endpointUrl = "/api/users/";
 const updateProfileEndPointUrl = `${endpointUrl}profile`;

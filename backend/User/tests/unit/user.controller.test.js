@@ -2,8 +2,8 @@ import httpMocks from "node-mocks-http";
 
 import UserController from "../../controller/userControllerImpl.js";
 import UserService from "../../services/UserService.js";
-import users from "../mock-data/users.js";
-import registeredUser from "../mock-data/registeredUsers.js";
+import users from "../mongodb/mock-data/users.js";
+import registeredUser from "../mongodb/mock-data/registeredUsers.js";
 
 let req, res, next, user;
 

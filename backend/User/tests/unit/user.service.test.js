@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 
 import UserService from "../../services/UserServiceImpl.js";
 import UserRepo from "../../repo/UserRepo";
-import users from "../mock-data/users.js";
-import registeredUsers from "../mock-data/registeredUsers.js";
+import users from "../mongodb/mock-data/users.js";
+import registeredUsers from "../mongodb/mock-data/registeredUsers.js";
 
 dotenv.config();
 
