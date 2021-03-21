@@ -189,7 +189,7 @@ describe("UserService.updateUser", () => {
   });
 
   it("should handle thrown errors", async () => {
-    const errorMessage = { message: "UserService: Internal Server Error" };
+    const errorMessage = { message: "UserService: User not found" };
     const rejectedPromise = Promise.reject(errorMessage);
 
     const _id = "604babb1d2455814bbc9392e";
@@ -204,7 +204,7 @@ describe("UserService.updateUser", () => {
     try {
       await userService.updateUser(request);
     } catch (error) {
-      expect(error.message).toMatch("UserService: Internal Server Error");
+      expect(error.message).toMatch("UserService: User not found");
     }
   });
 });
