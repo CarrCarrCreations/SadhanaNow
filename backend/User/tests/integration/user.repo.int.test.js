@@ -109,7 +109,7 @@ describe("UserRepo.remove", () => {
     expect(typeof userRepo.remove).toBe("function");
   });
 
-  it("should return a user object", async () => {
+  it("should remove a user object and return success message", async () => {
     const newUser = await userRepo.create(users[1]);
 
     const response = await userRepo.remove({ _id: newUser._id });
@@ -121,6 +121,44 @@ describe("UserRepo.remove", () => {
     expect.assertions(1);
     try {
       await userRepo.remove({ _id: "604babb1d2455814bbc9395e" });
+      throw new Error("Internal Server Error");
+    } catch (error) {
+      expect(error.message).toMatch("Internal Server Error");
+    }
+  });
+});
+
+describe("UserRepo.update", () => {
+  it("should have a update function", () => {
+    expect(typeof userRepo.update).toBe("function");
+  });
+
+  it("should return an updated user object", async () => {
+    const newUser = await userRepo.create(users[1]);
+
+    await userRepo.update({
+      _id: newUser._id,
+      changedEntry: {
+        displayName: "Changed!",
+      },
+    });
+
+    const updatedUser = await userRepo.findOne({ _id: newUser._id });
+
+    expect(updatedUser._id).toStrictEqual(newUser._id);
+    expect(updatedUser.displayName).toBe("Changed!");
+    expect(updatedUser.email).toBe(newUser.email);
+  });
+
+  it("should handle thrown errors", async () => {
+    expect.assertions(1);
+    try {
+      await userRepo.update({
+        _id: "604babb1d2455814bbc9395e",
+        changedEntry: {
+          displayName: "Error Handling",
+        },
+      });
       throw new Error("Internal Server Error");
     } catch (error) {
       expect(error.message).toMatch("Internal Server Error");
