@@ -25,19 +25,14 @@ describe(endpointUrl, () => {
       .send({ isAdmin: true });
   });
   afterAll(async () => {
-    await UserModel.collection
-      .drop()
-      .then(() => {
-        console.log("Successfully dropped User table.");
-      })
-      .catch((error) => {
-        let message;
-        if (error.message == "ns not found")
-          message = "User collection does not exist, so it cannot be dropped.";
-        else message = error.message;
+    await UserModel.collection.drop().catch((error) => {
+      let message;
+      if (error.message == "ns not found")
+        message = "User collection does not exist, so it cannot be dropped.";
+      else message = error.message;
 
-        console.log(`Error dropping User collection - ${message}`);
-      });
+      console.log(`Error dropping User collection - ${message}`);
+    });
   });
 
   test(`GET ${endpointUrl}`, async () => {
@@ -86,19 +81,14 @@ describe(idEndPointUrl, () => {
       .send({ isAdmin: true });
   });
   afterAll(async () => {
-    await UserModel.collection
-      .drop()
-      .then(() => {
-        console.log("Successfully dropped User table.");
-      })
-      .catch((error) => {
-        let message;
-        if (error.message == "ns not found")
-          message = "User collection does not exist, so it cannot be dropped.";
-        else message = error.message;
+    await UserModel.collection.drop().catch((error) => {
+      let message;
+      if (error.message == "ns not found")
+        message = "User collection does not exist, so it cannot be dropped.";
+      else message = error.message;
 
-        console.log(`Error dropping User collection - ${message}`);
-      });
+      console.log(`Error dropping User collection - ${message}`);
+    });
   });
 
   test(`GET ${idEndPointUrl}`, async () => {
@@ -170,19 +160,14 @@ describe(updateProfileEndPointUrl, () => {
       .send({ isAdmin: true });
   });
   afterAll(async () => {
-    await UserModel.collection
-      .drop()
-      .then(() => {
-        console.log("Successfully dropped User table.");
-      })
-      .catch((error) => {
-        let message;
-        if (error.message == "ns not found")
-          message = "User collection does not exist, so it cannot be dropped.";
-        else message = error.message;
+    await UserModel.collection.drop().catch((error) => {
+      let message;
+      if (error.message == "ns not found")
+        message = "User collection does not exist, so it cannot be dropped.";
+      else message = error.message;
 
-        console.log(`Error dropping User collection - ${message}`);
-      });
+      console.log(`Error dropping User collection - ${message}`);
+    });
   });
   test(`GET ${updateProfileEndPointUrl}`, async () => {
     const newUser = await request(app).post(endpointUrl).send(users[1]);
