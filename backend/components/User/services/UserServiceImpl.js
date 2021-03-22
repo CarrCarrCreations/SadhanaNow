@@ -1,4 +1,4 @@
-import generateToken from "../../utils/generateToken.js";
+import generateToken from "../../../utils/generateToken.js";
 import User from "../repo/models/User.js";
 
 const successResponse = (payload) => {

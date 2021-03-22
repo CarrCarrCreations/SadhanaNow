@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import colors from "colors";
 
 import lectureRoutes from "./routes/lectureRoutes.js";
-import userRoutes from "./User/routes/userRoutes.js";
+import userRoutes from "./components/User/routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";

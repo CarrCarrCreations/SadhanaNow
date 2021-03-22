@@ -1,6 +1,6 @@
 import request from "supertest";
 
-import app from "../../../app.js";
+import app from "../../../../app.js";
 import users from "../mongodb/mock-data/users.js";
 import UserModel from "../../repo/models/userModel";
 import { connect, closeDatabase } from "../mongodb/db-handler.js";
